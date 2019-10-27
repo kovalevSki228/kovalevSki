@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewBag.Title = "Edit";
+}
+@if (@User.Identity.IsAuthenticated)
+{
+
+    <div class="dropdown">
+        <a class="nav-link  text-white" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            @User.Identity.Name
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="#">@Localizer["Account"]</a>
+            <a class="dropdown-item" asp-controller="Users" asp-action="Setting" asp-route-id="#">@Localizer["Setting"]</a>
+
+
+            <div class="dropdown-divider"></div>
+            <form method="post" asp-controller="Account" asp-action="LogOff">
+                <input class="dropdown-item " type="submit" value="@Localizer["LoginOff"]" />
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item">
+                <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Login">@Localizer["Login"]</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Register">@Localizer["Register"]</a>
+            </li>
+        </ul>
+
+    </div>
+}
+

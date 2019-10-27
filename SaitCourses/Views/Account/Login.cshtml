@@ -1,0 +1,25 @@
+﻿@model SaitCourses.ViewModels.LoginViewModel
+
+    <form class="form-signin col-md-6 m-auto" method="post" asp-controller="Account" asp-action="Login"
+          asp-route-returnUrl="@Model.ReturnUrl">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <label asp-for="Name"></label><br />
+            <input class="form-control" asp-for="Name" />
+            <span asp-validation-for="Name"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label><br />
+            <input class="form-control" asp-for="Password" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="checkbox mb-3 mt-3">
+            <label asp-for="RememberMe">
+                <input asp-for="RememberMe"> Remember me
+            </label>
+        </div>
+        <div>
+            <input class="btn btn-outline-primary" type="submit" value="Login" />
+        </div>
+    </form>

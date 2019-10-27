@@ -1,0 +1,43 @@
+﻿/*.dark {
+    background-color: #121212 !important;
+    color: white !important;
+    border-color: black !important;
+}*/
+
+.dark_2 {
+    background-color: white !important;
+    color: black !important;
+    border-color: black !important;
+}
+
+html {
+    background-color: white !important;
+}
+
+.text-muted {
+    color: black !important;
+}
+
+.btn {
+    background-color: #d93585 !important;
+    color: black !important;
+    border-color: black !important;
+}
+
+.form-control {
+    background-color: white !important;
+    color: black;
+}
+
+.border {
+    border-color: black !important;
+}
+
+.navbar {
+    background-color: #d93585 !important;
+    color: white
+}
+
+.table {
+    color: black !important;
+}

@@ -1,0 +1,43 @@
+﻿.dark {
+    background-color: #121212 !important;
+    color: white !important;
+    border-color: black !important;
+}
+
+.dark_2 {
+    background-color: #111111 !important;
+    color: white !important;
+    border-color: black !important;
+}
+
+
+html {
+    background-color: #111111 !important;
+}
+
+.text-muted {
+    color: aliceblue !important;
+}
+
+.btn {
+    background-color: #dimgrey !important;
+    color: white !important;
+    border-color: black !important;
+}
+
+.form-control {
+    background-color: #121212 !important;
+    color: white !important;
+}
+
+.border {
+    border-color: black !important;
+}
+
+.navbar{
+    background-color: #040404 !important;
+    color: white
+}
+.table{
+    color:  aliceblue !important;
+}

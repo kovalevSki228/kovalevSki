@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewBag.Title = "Admin panel";
+}
+
+    <a class="btn btn-outline-primary" asp-action="Create">@Localizer["Adduser"]</a>
+<table class="table">
+    <tr><th>@Localizer["Email"]</th><th>@Localizer["Name"]</th><th></th></tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.UserName</td>
+            <td>
+                <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@user.Id">@Localizer["Edit"]</a>
+                    <a class="btn btn-sm btn-outline-primary" asp-action="ChangePassword" asp-route-id="@user.Id">@Localizer["CgangePassword"]</a>
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        @Localizer["Delete"]
+                    </button>
+                    <a class="btn btn-sm btn-outline-primary" asp-controller="Roles" asp-action="Edit" asp-route-userid="@user.Id">@Localizer["AccessRights"]</a>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

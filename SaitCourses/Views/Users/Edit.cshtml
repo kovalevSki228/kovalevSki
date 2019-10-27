@@ -1,0 +1,45 @@
+﻿@model SaitCourses.ViewModels.EditUserViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@{
+    ViewBag.Title = "Edit user";
+}
+
+<form class="form-signin col-md-6 m-auto" method="post" asp-action="Edit" asp-controller="Users">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    @*<div class="form-group">
+            <input type="hidden" asp-for="Id" class="form-control" />
+        </div>*@
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">@Localizer["Email"]</label>
+        <input type="text" asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">@Localizer["Name"]</label>
+        <input type="text" asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="FirstName" class="control-label">@Localizer["FirstName"]</label>
+        <input type="text" asp-for="FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="LastName" class="control-label">@Localizer["LastName"]</label>
+        <input type="text" asp-for="LastName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="OldPassword" class="control-label">@Localizer["OldPassword"]</label>
+        <input type="text" asp-for="OldPassword" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label">@Localizer["Password"]</label>
+        <input type="text" asp-for="Password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PasswordConfim" class="control-label">@Localizer["PasswordConfim"]</label>
+        <input type="text" asp-for="PasswordConfim" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Add" class="btn btn-outline-primary" />
+    </div>
+</form>

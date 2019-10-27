@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@*@{
+    ViewBag.Title = "Edit";
+}*@
+<div class="container body-content form-group">
+    <div>
+        @await Html.PartialAsync("_SelectLanguagePartial")
+    </div>
+</div>
+<div>
+    <a class="ml-3 btn btn-default btn-primary" asp-controller="Account" asp-action="SwitchColor">@Localizer["SwitchColor"]</a>
+</div>
+<div class="form-signin col-md-8 m-auto float-right">
+    @Html.Partial("Edit")
+</div>
