@@ -1,0 +1,103 @@
+﻿@model SaitCourses.ViewModels.TShitsViewModel
+<html>
+<head>
+    <title>lego</title>
+    <link href="https://fonts.googleapis.com/css?family=Almarai:700,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css.css" type="text/css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" src="js.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.4.0/fabric.min.js"></script>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+</head>
+<body>
+    <div class="container marginT50">
+        <div class="row">
+            <div class="col-sm">
+                <img src="@Model.image.Replace(".svg", ".png")">
+            </div>
+            <div class="col-sm">
+                <div class="container">
+                    <h5 class="text-muted">Rating: @Model.rating</h5>
+                    <form asp-action="SetRating" asp-controller="Users" asp-route-returnUrl="@Context.Request.Path" class="d-flex align-items-center" method="post">
+                        <label class="m-0 mr-3">Estimate: </label>
+                        @for (int i = 0; i < Model.ratings.Length; i++)
+                        {
+                            string buf = "check" + i;
+                            if (Model.ratings[i])
+                            {
+                                <label for="@buf"><img width="30px" class="star-img" src="https://res.cloudinary.com/del5wrr12/image/upload/v1572456096/jtedaws7fbeu9bnkuwyt.png" /></label>
+                            }
+                            else
+                            {
+                                <label for="@buf"><img width="30px" class="star-img" src="https://res.cloudinary.com/del5wrr12/image/upload/v1572456114/gxzesm7xakigy5fk34fy.png" /></label>
+                            }
+                            <input id="@buf" asp-for="@Model.ratings[i]" class="mark-check d-none mr-1" />
+                        }
+                        <input type="hidden" asp-for="@Model.id" />
+                        <button class="btn btn-default btn-primary p-1 ml-3" type="submit">Send</button>
+                    </form>
+                    <h2 id="Tname">T-Shirts name</h2>
+                    <p class="text">@Model.TShirtName</p>
+                    <p id="price">$30.00</p>
+                    <p class="font700">Description</p>
+                    <p class="text">@Model.description</p>
+                    <hr id="line">
+                    <p class="font700">size</p>
+                    <div class="container">
+                        <div class="row">
+                            <div class=".col-3">
+                                <button class="size">XS</button>
+                            </div>
+                            <div class=".col-3">
+                                <button class="size">S</button>
+                            </div>
+                            <div class=".col-3">
+                                <button class="size">M</button>
+                            </div>
+                            <div class=".col-3">
+                                <button class="size">L</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="add" class="font700">Add to Bag</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+    </div>
+    <div class="container">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="inputComment">
+            <div class="input-group-append">
+                <button id="comment" class="">Button</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    let markChecks = document.querySelectorAll(".mark-check");
+let starChecks = document.querySelectorAll(".star-img");
+for (let i = 0; i < markChecks.length; i++) {
+    markChecks[i].addEventListener("click", function (e) {
+        let buf = e.target.checked;
+        for (let i = 0; i < markChecks.length; i++) {
+            markChecks[i].checked = false;
+            starChecks[i].src = "https://res.cloudinary.com/del5wrr12/image/upload/v1572456114/gxzesm7xakigy5fk34fy.png";
+        }
+        if (buf) {
+            e.target.checked = true;
+            for (let i = 0; i < markChecks.length; i++) {
+                starChecks[i].src = "https://res.cloudinary.com/del5wrr12/image/upload/v1572456096/jtedaws7fbeu9bnkuwyt.png";
+                if (markChecks[i].checked)
+                    break;
+                markChecks[i].checked = true;
+            }
+        }
+    });
+}
+
+
+</script>

@@ -10,11 +10,14 @@ namespace SaitCourses.Models
 {
     public class ApplicationContext : IdentityDbContext<User>
     {
-        public DbSet<TShirt> shirts { get; set; }
-        public DbSet<Comment> comments { get; set; }
+       // public DbSet<TShirt> shirts { get; set; }
+        //public DbSet<Comment> comments { get; set; }
         public DbSet<Image> images { get; set; }
         public DbSet<Theme> themes { get; set; }
-
+        public DbSet<Shirt> tshirts { get; set;}
+        public DbSet<Rating> ratings { get; set; }
+        public DbSet<Topic> topics { get; set; }
+ 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             :base(options)
         {

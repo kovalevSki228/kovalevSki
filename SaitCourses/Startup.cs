@@ -49,7 +49,7 @@ namespace SaitCourses
 
         public void ConfigureServices(IServiceCollection services)
         {
-
+            
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
@@ -81,37 +81,12 @@ namespace SaitCourses
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
 
-                //    options.RequestCultureProviders = new List<IRequestCultureProvider>
-                //    {
-                //        new QueryStringRequestCultureProvider
-                //         {
-                //             QueryStringKey = "culture",
-                //            UIQueryStringKey = "ui-culture"
-                //         }
-                //    };
-                //});
-
-                //     options.RequestCultureProviders = new List<IRequestCultureProvider>
-                //      {
-                //        new QueryStringRequestCultureProvider
-                //{
-                //    QueryStringKey = "culture",
-                //    UIQueryStringKey = "ui-culture"
-                //}
-                //         new CookieRequestCultureProvider()
-                //      };
-                // });
-                //services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-                //services.AddMvc()
-                //    .AddDataAnnotationsLocalization()
-                //    .AddViewLocalization();
-
             });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

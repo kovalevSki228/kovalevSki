@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using System.IO;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SaitCourses.Controllers
 {
@@ -20,20 +21,23 @@ namespace SaitCourses.Controllers
     {
         public UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
-        public HomeController(UserManager<User> userManager)
+        private readonly ApplicationContext _db;
+
+        public HomeController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationContext db)
         {
             _userManager = userManager;
-            
+            _signInManager = signInManager;
+            _db = db;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(_db.tshirts.ToList());
         }
 
         public IActionResult Privacy()
         {
-            return View();
+            return View(_db.tshirts.ToList());
         }
 
 
@@ -66,6 +70,7 @@ namespace SaitCourses.Controllers
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
+
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),

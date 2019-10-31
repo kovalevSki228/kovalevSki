@@ -33,51 +33,36 @@
     <form class="form-signin col m-auto" method="post" asp-action="Setting" asp-controller="Users">
         <div asp-validation-summary="All" class="text-danger"></div>
         @*<div class="form-group">
-            <input type="hidden" asp-for="Id" class="form-control" />
-        </div>*@
+                <input type="hidden" asp-for="Id" class="form-control" />
+            </div>*@
         <div class="row">
             <div>
 
                 <label asp-for="Email" class="control-label">@Localizer["Email"]</label>
-                <input type="text" asp-for="Email" class="form-control" />
+                <input type="text" asp-for="Email" class="form-control" readonly/>
             </div>
             <div>
                 <label asp-for="Name" class="control-label">@Localizer["Name"]</label>
-                <input type="text" asp-for="Name" class="form-control" />
+                <input type="text" asp-for="Name" class="form-control" readonly/>
             </div>
         </div>
         <div class="row">
             <div>
                 <label asp-for="FirstName" class="control-label">@Localizer["FirstName"]</label>
-                <input type="text" asp-for="FirstName" class="form-control" />
+                <input type="text" asp-for="FirstName" class="form-control" readonly/>
             </div>
             <div>
                 <label asp-for="LastName" class="control-label">@Localizer["LastName"]</label>
-                <input type="text" asp-for="LastName" class="form-control" />
+                <input type="text" asp-for="LastName" class="form-control" readonly/>
             </div>
         </div>
         <div class="row">
             <div>
                 <label asp-for="Sex" class="control-label">Sex</label>
-                <input type="text" asp-for="Sex" class="form-control" />
+                <input type="text" asp-for="Sex" class="form-control" readonly/>
             </div>
-            <div>
-                <label asp-for="OldPassword" class="control-label">@Localizer["OldPassword"]</label>
-                <input type="text" asp-for="OldPassword" class="form-control" />
             </div>
 
-        </div>
-        <div class="row">
-            <div>
-                <label asp-for="Password" class="control-label">@Localizer["Password"]</label>
-                <input type="text" asp-for="Password" class="form-control" />
-            </div>
-            <div>
-                <label asp-for="PasswordConfim" class="control-label">@Localizer["PasswordConfim"]</label>
-                <input type="text" asp-for="PasswordConfim" class="form-control" />
-            </div>
-
-        </div>
         <input type="submit" value="Add" class="btn btn-outline-primary" />
     </form>
     @*@Html.Partial("Edit")*@
@@ -87,7 +72,7 @@
     {
         if (img.userId == Model.Id)
         {
-            <div class="card left shadow-lg" style="margin-left:10px; width: 11rem;" width="100 col-sm-3 pb-3 pr-sm-4" >
+            <div class="card left " style="margin-left:10px; width: 11rem;" width="100 col-sm-3 pb-3 pr-sm-4">
                 <embed src="@img.image.Replace(".svg", ".png")" class="card-img-top" alt="..." height="150" />
                 <div class="card-body ellipsis">
                     <h6 class="card-text">@img.name</h6>
@@ -97,9 +82,9 @@
                             <button type="submit" class="btn btn-sm btn-danger"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572397986/oqlhs3sjy8orthqrhtth.png"></button>
                         </form>
                         <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
-                           <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
+                            <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
                         </form>
-                       
+
                     </div>
                 </div>
             </div>

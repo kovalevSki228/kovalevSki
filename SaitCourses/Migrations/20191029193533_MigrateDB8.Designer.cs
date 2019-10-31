@@ -10,8 +10,8 @@ using SaitCourses.Models;
 namespace SaitCourses.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20191026151419_three")]
-    partial class three
+    [Migration("20191029193533_MigrateDB8")]
+    partial class MigrateDB8
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,41 +131,21 @@ namespace SaitCourses.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("SaitCourses.Models.Comment", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("tShirtId");
-
-                    b.Property<string>("text");
-
-                    b.Property<string>("userId");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("tShirtId");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("comments");
-                });
-
             modelBuilder.Entity("SaitCourses.Models.Image", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("description");
+
                     b.Property<string>("image");
+
+                    b.Property<string>("name");
 
                     b.Property<int>("tShirtId");
 
                     b.HasKey("id");
-
-                    b.HasIndex("tShirtId")
-                        .IsUnique();
 
                     b.ToTable("images");
                 });
@@ -180,6 +160,8 @@ namespace SaitCourses.Migrations
 
                     b.Property<string>("description");
 
+                    b.Property<string>("image");
+
                     b.Property<string>("name");
 
                     b.Property<int>("themeId");
@@ -187,8 +169,6 @@ namespace SaitCourses.Migrations
                     b.Property<string>("userId");
 
                     b.HasKey("id");
-
-                    b.HasIndex("themeId");
 
                     b.HasIndex("userId");
 
@@ -312,34 +292,9 @@ namespace SaitCourses.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SaitCourses.Models.Comment", b =>
-                {
-                    b.HasOne("SaitCourses.Models.TShirt", "tShirt")
-                        .WithMany()
-                        .HasForeignKey("tShirtId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SaitCourses.Models.User", "user")
-                        .WithMany()
-                        .HasForeignKey("userId");
-                });
-
-            modelBuilder.Entity("SaitCourses.Models.Image", b =>
-                {
-                    b.HasOne("SaitCourses.Models.TShirt", "tShirt")
-                        .WithOne("images")
-                        .HasForeignKey("SaitCourses.Models.Image", "tShirtId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SaitCourses.Models.TShirt", b =>
                 {
-                    b.HasOne("SaitCourses.Models.Theme", "theme")
-                        .WithMany()
-                        .HasForeignKey("themeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SaitCourses.Models.User", "user")
+                    b.HasOne("SaitCourses.Models.User", "users")
                         .WithMany()
                         .HasForeignKey("userId");
                 });

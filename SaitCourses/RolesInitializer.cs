@@ -23,14 +23,6 @@ namespace SaitCourses
             {
                 await roleManager.CreateAsync(new IdentityRole("Theme"));
             }
-            if (await roleManager.FindByNameAsync("LangueRu") == null)
-            {
-                await roleManager.CreateAsync(new IdentityRole("LangueRu"));
-            }
-            if (await roleManager.FindByNameAsync("LangueEn") == null)
-            {
-                await roleManager.CreateAsync(new IdentityRole("LangueEn"));
-            }
         }
     }
 }

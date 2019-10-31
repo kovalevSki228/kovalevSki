@@ -1,0 +1,245 @@
+<div class="constructor-container">
+  <div class="constructor">
+    <div class="constructor__canvas-container">
+      <div #canvas class="constructor__canvas" (window:resize)="resizeCanvas()">
+        <canvas id="preview" width="500px" height="500px"></canvas>
+      </div>
+      <div class="constructor__image-drop">
+        <div class="dropbox" id="dropbox">
+           <form class="dropbox-form">
+            <div class="dropbox-form__line">
+              <h4>Upload your image files with the file dialog or by dragging and dropping images onto the dashed
+                region</h4>
+              <div class="dropbox-form__controls">
+                <div class="upload_button_holder">
+                  <input type="file" id="fileElem" multiple accept="image/*" style="display:none"
+                         onchange="handleFiles(this.files)">
+                  <a href="#" id="fileSelect">Select some files</a>
+                  <a href="#" id="urlSelect">URL Upload</a>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="progress-bar" id="progress-bar">
+            <div class="progress" id="progress"></div>
+          </div>
+          <div id="gallery">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor">
+      <h2 class="editor__title">T-constructor</h2>
+      <div class="tools">
+        <mat-grid-list class="tools__main" cols="1" rowHeight="3em">
+          <mat-grid-tile class="tools__main-item">
+            <span class="tools__name">T-shirt type:</span>
+            <mat-radio-group class="shirt-type-switcher">
+              <mat-radio-button
+                class="shirt-type-switcher__option"
+                value="man"
+                [checked]="true"
+                (click)="changeShirtType(this.manShirt)"
+              >
+                Man
+              </mat-radio-button>
+              <mat-radio-button
+                class="shirt-type-switcher__option"
+                value="woman"
+                (click)="changeShirtType(this.womanShirt)"
+              >
+                Woman
+              </mat-radio-button>
+            </mat-radio-group>
+          </mat-grid-tile>
+          <mat-grid-tile class="tools__main-item">
+            <span class="tools__name">T-shirt color:</span>
+            <mat-button-toggle-group class="color-switcher">
+              <mat-button-toggle
+                class="color-switcher__color"
+                value="white"
+                (click)="changeShirtColor('white')"
+              >
+                <mat-icon class="white">lens</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle
+                class="color-switcher__color"
+                (click)="changeShirtColor('black')"
+              >
+                <mat-icon class="black">lens</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle
+                class="color-switcher__color"
+                (click)="changeShirtColor('green')"
+              >
+                <mat-icon class="green">lens</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle
+                class="color-switcher__color"
+                (click)="changeShirtColor('red')"
+              >
+                <mat-icon class="red">lens</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </mat-grid-tile>
+          <mat-grid-tile class="tools__main-item">
+            <span class="tools__name">Active image style:</span>
+            <button class="tools__button" mat-raised-button (click)="changeImageFilter('blackAndWhite')">B&W</button>
+            <button class="tools__button" mat-raised-button (click)="changeImageFilter('sepia')">Sepia</button>
+            <button class="tools__button" mat-raised-button (click)="changeImageFilter('pixelate')"> Pixelate</button>
+            <button class="tools__button" mat-raised-button (click)="changeImageFilter('none')"> None</button>
+
+          </mat-grid-tile>
+          <mat-grid-tile class="tools__main-item" [rowspan]="0.5">
+            <span class="tools__name">Active text fonts</span>
+            <button class="tools__button" mat-raised-button (click)="changeShirtTextFont('Arial')">Sans-serif</button>
+            <button class="tools__button" mat-raised-button (click)="changeShirtTextFont('Comic Sans MS')">Cursive
+            </button>
+            <button class="tools__button" mat-raised-button (click)="changeShirtTextFont('Courier New')">Monospace
+            </button>
+          </mat-grid-tile>
+          <mat-grid-tile class="tools__main-item">
+            <span class="tools__name">Active text color:</span>
+            <mat-button-toggle-group class="color-switcher">
+              <mat-button-toggle
+                class="color-switcher__color"
+                value="white"
+                (click)="changeShirtTextColor('white')"
+              >
+                <mat-icon class="white">lens</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle
+                class="color-switcher__color"
+                (click)="changeShirtTextColor('black')"
+              >
+                <mat-icon class="black">lens</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle
+                class="color-switcher__color"
+                (click)="changeShirtTextColor('green')"
+              >
+                <mat-icon class="green">lens</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle
+                class="color-switcher__color"
+                (click)="changeShirtTextColor('red')"
+              >
+                <mat-icon class="red">lens</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </mat-grid-tile>
+          <mat-grid-tile class="tools__main-item" [rowspan]="1.5">
+            <form class="text-printer">
+              <mat-form-field class="text-printer__input">
+                <input matInput type="text" placeholder="Print text" [(ngModel)]="shirtText" name="shirtText">
+                <button mat-button *ngIf="shirtText" matSuffix mat-icon-button aria-label="Clear"
+                        (click)="shirtText=''">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+              <button class="tools__button"
+                      type="button"
+                      mat-raised-button
+                      (click)="addShirtText(shirtText)"
+              >
+                Add text
+              </button>
+              <button class="tools__button"
+                      type="button"
+                      mat-raised-button
+                      (click)="removeShirtText()"
+              >
+                Remove text
+              </button>
+            </form>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+      <form [formGroup]="formGroup" class="save-design-form">
+        <div class="save-design-form__part-container">
+          <mat-form-field>
+            <input placeholder="T-Shirts name"
+                   formControlName="name"
+                   type="text"
+                   matInput
+                   required
+            >
+            <mat-error *ngIf="formGroup.controls.name.invalid">Name is required</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Theme</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let theme of themes" [value]="theme.viewTheme">
+                {{theme.viewTheme}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+
+        <!--        <mat-form-field>-->
+        <!--          <input placeholder="Price"-->
+        <!--                 matInput-->
+        <!--                 formControlName="price"-->
+        <!--                 type="number"-->
+        <!--                 step="0.01"-->
+        <!--                 required-->
+        <!--          >-->
+        <!--          <mat-error *ngIf="formGroup.controls.price.invalid">Enter correct price</mat-error>-->
+        <!--        </mat-form-field>-->
+
+
+        <mat-form-field class="design-tag-list">
+          <mat-chip-list #tagList aria-label="Tag selection">
+            <mat-chip
+              *ngFor="let tag of tags"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="removeTag(tag)">
+              {{tag}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="New tag..."
+              #fruitInput
+              [formControl]="tagCtrl"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="tagList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="addTag($event)">
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedTag($event)">
+            <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+              {{tag}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+
+        <mat-form-field>
+          <textarea
+            placeholder="Description"
+            matInput
+            formControlName="description"
+            rows="5"
+            required
+          ></textarea>
+          <mat-error *ngIf="formGroup.controls.description.invalid">Description is required</mat-error>
+        </mat-form-field>
+        <!--        <mat-form-field>-->
+        <!--          <input placeholder="Password Confirm"-->
+        <!--                 matInput-->
+        <!--                 formControlName="passwordConfirm"-->
+        <!--                 type="password"-->
+        <!--                 required-->
+        <!--          >-->
+        <!--          <mat-error *ngIf="formGroup.controls.passwordConfirm.errors">Password mismatch</mat-error>-->
+        <!--        </mat-form-field>-->
+        <button mat-raised-button color="primary">Save</button>
+      </form>
+    </div>
+  </div>
+
+</div>

@@ -12,9 +12,8 @@
             @User.Identity.Name
         </a>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="#">@Localizer["Account"]</a>
+            <a class="dropdown-item" asp-controller="Users" asp-action="Constructor" asp-area="">@Localizer["Account"]</a>
             <a class="dropdown-item" asp-controller="Users" asp-action="Setting" asp-route-id="#">@Localizer["Setting"]</a>
-
 
             <div class="dropdown-divider"></div>
             <form method="post" asp-controller="Account" asp-action="LogOff">

@@ -10,8 +10,8 @@ using SaitCourses.Models;
 namespace SaitCourses.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20191019192717_init3")]
-    partial class init3
+    [Migration("20191030105442_MigrateDB14")]
+    partial class MigrateDB14
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,6 +131,86 @@ namespace SaitCourses.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SaitCourses.Models.Image", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("description");
+
+                    b.Property<string>("image");
+
+                    b.Property<string>("name");
+
+                    b.Property<int>("tShirtId");
+
+                    b.HasKey("id");
+
+                    b.ToTable("images");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Rating", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("shirtid");
+
+                    b.Property<int>("userId");
+
+                    b.Property<string>("userId1");
+
+                    b.Property<int>("value");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("shirtid");
+
+                    b.HasIndex("userId1");
+
+                    b.ToTable("ratings");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Shirt", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("createDate");
+
+                    b.Property<string>("description");
+
+                    b.Property<string>("image");
+
+                    b.Property<string>("name");
+
+                    b.Property<int>("themeId");
+
+                    b.Property<string>("userId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("tshirts");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Theme", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("name");
+
+                    b.HasKey("id");
+
+                    b.ToTable("themes");
+                });
+
             modelBuilder.Entity("SaitCourses.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -233,6 +313,25 @@ namespace SaitCourses.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Rating", b =>
+                {
+                    b.HasOne("SaitCourses.Models.Shirt", "shirt")
+                        .WithMany()
+                        .HasForeignKey("shirtid")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SaitCourses.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("userId1");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Shirt", b =>
+                {
+                    b.HasOne("SaitCourses.Models.User", "users")
+                        .WithMany()
+                        .HasForeignKey("userId");
                 });
 #pragma warning restore 612, 618
         }

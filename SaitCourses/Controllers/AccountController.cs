@@ -15,12 +15,14 @@ namespace SaitCourses.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        RoleManager<IdentityRole> _roleManager;
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationContext _db;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, ApplicationContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _db = db;
         }
 
         [HttpGet]
@@ -34,14 +36,13 @@ namespace SaitCourses.Controllers
         {
             if(ModelState.IsValid)
             {
+                bool admin = false;
+                if (User.Identity == null) admin = true;
                 User user = new User { Email = model.Email, UserName = model.Name};
                 //add user
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-
-
-
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackurl = Url.Action("confirmemail",
                     //    "account",
@@ -52,12 +53,18 @@ namespace SaitCourses.Controllers
                     //    $"to confirm registration, follow the link: <a href='{callbackurl}'>link</a>"))                        ;
 
                     //return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+                    IEnumerable<User> users = _db.Users.Select(item => item);
 
-
-
-                    ////instal coocks
-                    await _userManager.AddToRoleAsync(user, "user");
-                    await _signInManager.SignInAsync(user, false);
+                    if (_db.Users.Count() == 1)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                        await _signInManager.SignInAsync(user, false);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                        await _signInManager.SignInAsync(user, false);
+                    }
                     return RedirectToAction("index", "home");
                 }
                 else

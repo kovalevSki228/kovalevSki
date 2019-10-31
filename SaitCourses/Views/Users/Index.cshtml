@@ -14,14 +14,38 @@
             <td>@user.Email</td>
             <td>@user.UserName</td>
             <td>
-                <form asp-action="Delete" asp-route-id="@user.Id" method="post">
-                    <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@user.Id">@Localizer["Edit"]</a>
-                    <a class="btn btn-sm btn-outline-primary" asp-action="ChangePassword" asp-route-id="@user.Id">@Localizer["CgangePassword"]</a>
-                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                        @Localizer["Delete"]
-                    </button>
-                    <a class="btn btn-sm btn-outline-primary" asp-controller="Roles" asp-action="Edit" asp-route-userid="@user.Id">@Localizer["AccessRights"]</a>
-                </form>
+                <div class="col" style="display:inline-block">
+                    <a class="btn btn-sm btn-outline-primary" style="display:inline-block" asp-action="Edit" asp-route-id="@user.Id">@Localizer["Edit"]</a>
+
+                    @if (user.LockoutEnabled == false)
+                    {
+                        <form style="display:inline-block" asp-action="Block" asp-route-id="@user.Id" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                Block
+                            </button>
+                        </form>
+                        // <a class="btn btn-sm btn-outline-primary" asp-action="" asp-route-id="@user.Id" media="post">Blok</a>}
+                    }
+                    else
+                    {
+                        <form style="display:inline-block" asp-action="UnBlock" asp-route-id="@user.Id" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-info">
+                                Un Block
+                            </button>
+                        </form>
+                        @*<button type="submit" class="btn btn-sm btn-outline-danger">
+                Un Block
+            </button><a class="btn btn-sm btn-outline-primary" asp-action="UnBlock" asp-route-id="@user.Id" media="post">Un block</a>*@
+                    }
+
+                    <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                        <button style="display:inline-block" type="submit" class="btn btn-sm btn-outline-danger">
+                            @Localizer["Delete"]
+                        </button>
+                    </form>
+                    <a style="display:inline-block" class="btn btn-sm btn-outline-primary"  asp-controller="Users" asp-action="SettingAdmin" asp-route-id="@user.Id">@Localizer["Setting"]</a>
+                    <a style="display:inline-block" class="btn btn-sm btn-outline-primary" asp-controller="Roles" asp-action="Edit" asp-route-userid="@user.Id">@Localizer["AccessRights"]</a>
+                </div>
             </td>
         </tr>
     }

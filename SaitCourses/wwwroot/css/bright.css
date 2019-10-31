@@ -24,6 +24,11 @@ html {
     border-color: black !important;
 }
 
+.card {
+    background-color: #d93585 !important;
+    color: white !important;
+}
+
 .form-control {
     background-color: white !important;
     color: black;

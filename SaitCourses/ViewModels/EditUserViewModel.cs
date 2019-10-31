@@ -32,5 +32,11 @@ namespace SaitCourses.ViewModels
         [Compare("Password", ErrorMessage = "Password miss match")]
         [DataType(DataType.Password)]
         public string PasswordConfim { get; set; }
+        public Shirt[] shirts { get; set; }
+        public int idImg { get; set; }
+        public string image { get; set; }
+        public string nameImg { get; set; }
+        public string description { get; set; }
+
     }
 }

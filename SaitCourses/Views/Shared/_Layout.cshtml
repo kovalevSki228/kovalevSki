@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
-
 @inject IViewLocalizer Localizer
 
 <!DOCTYPE html>
@@ -12,16 +11,21 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/theme.bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/src_dropzone.scss" />
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
           asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
           crossorigin="anonymous"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <script>
+    </script>
     @{
         if (User.IsInRole("Theme"))
         {
+            
             <link rel="stylesheet" href="~/css/dark.css" />
+            
         }
         else
         {
@@ -47,6 +51,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Account" asp-action="SwitchColor">@Localizer["SwitchColor"]</a>
+                        </li>
                     </ul>
                     
                 </div>
@@ -68,7 +75,7 @@
         </nav>
         
     </header>
-    <div class="container dark_2">
+    <div class="container dark-2">
         @RenderBody()
     </div>
     @*<div class="container">
@@ -104,7 +111,27 @@
     </environment>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        function setCookie(c_name, value, exdays) {
+            var exdate = new Date();
+            exdate.setDate(exdate.getDate() + exdays);
+            var c_value = escape(value) + ((exdays == null) ? "" : ("; expires=" + exdate.toUTCString()));
+            document.cookie = c_name + "=" + c_value;
+        }
 
+        function getCookie(c_name) {
+            var i, x, y, ARRcookies = document.cookie.split(";");
+            for (i = 0; i < ARRcookies.length; i++) {
+                x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+                y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+                x = x.replace(/^\s+|\s+$/g, "");
+                if (x == c_name) {
+                    return unescape(y);
+                }
+            }
+            console.log(y);
+        }
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

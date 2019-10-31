@@ -15,10 +15,12 @@ namespace SaitCourses.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ApplicationContext _db;
 
-        public UsersController(UserManager<User> userManager)
+        public UsersController(UserManager<User> userManager, ApplicationContext db)
         {
             _userManager = userManager;
+            _db = db;
         }
         [Authorize(Roles = "Admin")]
         public IActionResult Index() => View(_userManager.Users.ToList());
@@ -45,6 +47,18 @@ namespace SaitCourses.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> SettingAdmin(string id)
+        {
+            User user = await _userManager.FindByIdAsync(id);
+            //User userr = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email, Name = user.UserName, FirstName = user.FirstName, LastName = user.LastName, shirts = _db.tshirts.ToArray() };
+            return View(model);
+        }
 
         public async Task<IActionResult> Setting(string id)
         {
@@ -54,10 +68,121 @@ namespace SaitCourses.Controllers
             {
                 return NotFound();
             }
-            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email, Name = user.UserName, FirstName = user.FirstName, LastName = user.LastName };
+
+            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email, Name = user.UserName, FirstName = user.FirstName, LastName = user.LastName, shirts = _db.tshirts.ToArray()};
             return View(model);
         }
-        
+        [Authorize]
+        public IActionResult Constructor()
+        {
+            string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
+            return View(new TShitsViewModel { 
+                TShirtName = "name",
+                description = "description",
+                Topics = topics
+            });;
+        }
+
+
+
+        public async Task<IActionResult> More(int id)
+        {
+
+            var result = await _db.tshirts.FindAsync(id);
+            int[] resaultRating = _db.ratings.Where(item => item.shirt.id == id).Select(item => item.value).ToArray();
+            double marksRes = 0;
+            if (resaultRating.Length > 0)
+            {
+                for (int i = 0; i < resaultRating.Length; i++)
+                {
+                    marksRes += resaultRating[i] + 1;
+                }
+                marksRes /= resaultRating.Length;
+            }
+            User user = await _userManager.GetUserAsync(User);
+            marksRes = Math.Round(marksRes, 2);
+            Rating mark;
+            bool[] marks = new bool[5];
+            if (User.Identity.IsAuthenticated)
+            {
+                mark = _db.ratings.FirstOrDefault(item => item.shirt.id == id && item.user == user);
+                
+                if (mark != null)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (i <= mark.value)
+                            marks[i] = true;
+                        else
+                            marks[i] = false;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        marks[i] = false;
+                    }
+                }
+            }
+            return View(new TShitsViewModel { id = result.id, description = result.description, TShirtName = result.name, image = result.image, rating = marksRes, ratings = marks });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Block(string id)
+        {
+            User user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                await _userManager.SetLockoutEnabledAsync(user, true);
+            }                    
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+       // [TypeFilter(typeof(AdminFilter))]
+        public async Task<IActionResult> UnBlock(string id)
+        {
+            User user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                
+                await _userManager.SetLockoutEnabledAsync(user, false);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetRating(TShitsViewModel model)
+        {
+            User user = await _userManager.GetUserAsync(User);
+            Shirt shirt = _db.tshirts.FirstOrDefault(item => item.id == model.id);
+            Rating mark = _db.ratings.FirstOrDefault(item => item.shirt == shirt && item.user == user);
+            for (int i = 4; i >= 0; i--)
+            {
+                if (model.ratings[i] == true)
+                {
+                    if (mark == null)
+                    {
+                        _db.ratings.Add(new Rating { shirt = shirt, user = user, value = i });
+                        await _db.SaveChangesAsync();
+                        return RedirectToAction("Index","Home");
+                    }
+                    else
+                    {
+                        mark.value = i;
+                        _db.ratings.Update(mark);
+                        await _db.SaveChangesAsync();
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+            }
+            if (mark != null)
+            {
+                _db.ratings.Remove(mark);
+                await _db.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Setting(EditUserViewModel model)
         {
@@ -87,7 +212,7 @@ namespace SaitCourses.Controllers
                     }
                 }
             }
-            return View(model);
+            return View();
         }
         public async Task<IActionResult> Edit(string id)
         {

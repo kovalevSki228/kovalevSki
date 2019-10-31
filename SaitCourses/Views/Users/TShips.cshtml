@@ -1,0 +1,39 @@
+﻿@model SaitCourses.ViewModels.TShitsViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@*@{
+    ViewData["Title"] = "TShips";
+}*@
+
+<h1>TShips</h1>
+
+<form class="form-signin col-md-6 m-auto" method="post" asp-action="Edit" asp-controller="Users">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    @*<div class="form-group">
+         public string TShirtName { get; set; }
+        public string image { get; set; }
+        public string theme { get; set; }
+        public string description { get; set; }
+            <input type="hidden" asp-for="Id" class="form-control" />
+        </div>*@
+    <div class="form-group">
+        <label asp-for="TShirtName" class="control-label">Название</label>
+        <input type="text" asp-for="TShirtName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="image" class="control-label"></label>
+        <input type="text" asp-for="image" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="theme" class="control-label">Тема</label>
+        <input type="text" asp-for="theme" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="description" class="control-label">Описание</label>
+        <input type="text" asp-for="description" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-outline-primary" />
+    </div>
+</form>

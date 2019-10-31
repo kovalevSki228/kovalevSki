@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SaitCourses.Models;
 
 namespace SaitCourses.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20191030091542_MigrateDB12")]
+    partial class MigrateDB12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +156,9 @@ namespace SaitCourses.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("shirtid");
+                    b.Property<int?>("shirtid");
+
+                    b.Property<int>("shirtsId");
 
                     b.Property<int>("userId");
 
@@ -207,19 +211,6 @@ namespace SaitCourses.Migrations
                     b.HasKey("id");
 
                     b.ToTable("themes");
-                });
-
-            modelBuilder.Entity("SaitCourses.Models.Topic", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("nameTopic");
-
-                    b.HasKey("id");
-
-                    b.ToTable("topics");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.User", b =>
@@ -330,8 +321,7 @@ namespace SaitCourses.Migrations
                 {
                     b.HasOne("SaitCourses.Models.Shirt", "shirt")
                         .WithMany()
-                        .HasForeignKey("shirtid")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("shirtid");
 
                     b.HasOne("SaitCourses.Models.User", "user")
                         .WithMany()

@@ -12,12 +12,43 @@ namespace SaitCourses.Controllers
     public class TShirtController : Controller
     {
         private readonly ApplicationContext _db;
+
+        
         private readonly UserManager<User> _userManager;
-        public IActionResult Index()
+        public TShirtController(ApplicationContext db, UserManager<User> userManager)
         {
-            return View();
+            _db = db;
+            _userManager = userManager;
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            var rating = _db.ratings.FirstOrDefault(item => item.shirtid == id);
+            var tshirt = await _db.tshirts.FindAsync(id);
+            if (rating != null)
+            {
+                _db.ratings.Remove(rating);
+                await _db.SaveChangesAsync();
+            }
+            if (tshirt != null)
+            {
+                _db.tshirts.Remove(tshirt);
+                await _db.SaveChangesAsync();
+            }
+            return RedirectToAction("Setting", "Users");
+        }
+        public async Task<IActionResult> CreateTopic(string name)
+        {
+
+            var topic = _db.topics.FirstOrDefault(item => item.nameTopic == name);
+            if (topic == null)
+            {
+                _db.topics.Add(new Topic { nameTopic = name });
+                await _db.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult Index() => View(_db.images.ToList());
         public IActionResult EditCampaign()
         {
             //if (model.campaigns != null)
@@ -54,14 +85,14 @@ namespace SaitCourses.Controllers
         [HttpPost]
         public async Task<IActionResult> EditCampaign(TShitsViewModel model)
         {
-            TShirt shirt = _db.shirts.FirstOrDefault(item => item.id == model.id);
+            //TShirt shirt = _db.shirts.FirstOrDefault(item => item.id == model.id);
             //if (_db.TagsToCampaigns.FirstOrDefault(item => item.campaign == Campaign) != null)
             //    _db.TagsToCampaigns.RemoveRange(_db.TagsToCampaigns.Where(item => item.campaign == Campaign));
-            await _db.SaveChangesAsync();
-            shirt.name = model.TShirtName;
-            shirt.description = model.description;
-            shirt.theme = _db.themes.FirstOrDefault(item => item.name == model.theme);
-            shirt.image = model.image;
+            //await _db.SaveChangesAsync();
+            //shirt.name = model.TShirtName;
+            //shirt.description = model.description;
+            //shirt.theme = _db.themes.FirstOrDefault(item => item.name == model.theme);
+            //shirt.image = model.image;
 
             //if (model.Tags != null)
             //{
@@ -89,6 +120,8 @@ namespace SaitCourses.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        
 
     }
 }

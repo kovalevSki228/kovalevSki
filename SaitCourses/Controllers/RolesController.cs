@@ -14,34 +14,28 @@ namespace SaitCourses.Controllers
     {
         RoleManager<IdentityRole> _roleManager;
         UserManager<User> _userManager;
+        ApplicationContext _db;
 
-        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
+        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager, ApplicationContext db)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _db = db;
         }
 
-        public IActionResult Index() => View(_roleManager.Roles.ToList());
+        public IActionResult Index() => View(_db.topics.ToList());
         public IActionResult Create() => View();
         [HttpPost]
         public async Task<IActionResult> Create(string name)
         {
-            if(!string.IsNullOrEmpty(name))
+
+            var topic = _db.topics.FirstOrDefault(item => item.nameTopic == name);
+            if (topic == null)
             {
-                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(name));
-                if(result.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    foreach(var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
+                _db.topics.Add(new Topic { nameTopic = name });
+                await _db.SaveChangesAsync();
             }
-            return View(name);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

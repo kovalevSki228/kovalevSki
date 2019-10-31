@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SaitCourses.Models;
 
 namespace SaitCourses.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20191030105128_MigrateDB13")]
+    partial class MigrateDB13
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -148,29 +150,6 @@ namespace SaitCourses.Migrations
                     b.ToTable("images");
                 });
 
-            modelBuilder.Entity("SaitCourses.Models.Rating", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("shirtid");
-
-                    b.Property<int>("userId");
-
-                    b.Property<string>("userId1");
-
-                    b.Property<int>("value");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("shirtid");
-
-                    b.HasIndex("userId1");
-
-                    b.ToTable("ratings");
-                });
-
             modelBuilder.Entity("SaitCourses.Models.Shirt", b =>
                 {
                     b.Property<int>("id")
@@ -207,19 +186,6 @@ namespace SaitCourses.Migrations
                     b.HasKey("id");
 
                     b.ToTable("themes");
-                });
-
-            modelBuilder.Entity("SaitCourses.Models.Topic", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("nameTopic");
-
-                    b.HasKey("id");
-
-                    b.ToTable("topics");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.User", b =>
@@ -324,18 +290,6 @@ namespace SaitCourses.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SaitCourses.Models.Rating", b =>
-                {
-                    b.HasOne("SaitCourses.Models.Shirt", "shirt")
-                        .WithMany()
-                        .HasForeignKey("shirtid")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SaitCourses.Models.User", "user")
-                        .WithMany()
-                        .HasForeignKey("userId1");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Shirt", b =>

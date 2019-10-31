@@ -1,24 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@*@model SaitCourses.ViewModels.TShitsViewModel*@
 
-<script src="http://your-local-host.domain/cloudinary_js/jquery.ui.widget.js"></script>
-<script src="http://your-local-host.domain/cloudinary_js/jquery.iframe-transport.js"></script>
-<script src="http://your-local-host.domain/cloudinary_js/jquery.fileupload.js"></script>
-<script src="http://your-local-host.domain/cloudinary_js/jquery.cloudinary.js"></script>
-<script src="http://your-local-host.domain/cloudinary_js/canvas-to-blob.min.js"></script>
-<script src="http://your-local-host.domain/cloudinary_js/jquery.fileupload-image.js"></script>
-<script src="http://your-local-host.domain/cloudinary_js/jquery.fileupload-process.js"></script>
-<script src="http://your-local-host.domain/cloudinary_js/jquery.fileupload-validate.js"></script>
-<script src="http://your-local-host.domain/cloudinary_js/load-image.all.min.js"></script>
-<script type='text/javascript'>
-    $.cloudinary.config({
-        "cloud_name": "del5wrr12",
-        "api_key": "453273645623147",
-        "private_cdn": false,
-        "cdn_subdomain": false
-  );
-</script>
+
 <style>
     #dropbox {
         border: 4px dashed #ccc;
@@ -58,31 +41,64 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <form method="post" asp-controller="Account" asp-action="LogOff">
-        @if (User.IsInRole("Admin"))
-        {
-            <div class="text-center">
-                <h1 class="display-4">@Localizer["WelcomeAdministrator"] @User.Identity.Name</h1>
-                <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-            </div>
-            <a class="btn btn-outline-primary" asp-controller="Users" asp-action="Index">@Localizer["Users"]</a>
-            <a class="btn btn-outline-primary" asp-controller="Roles" asp-action="Index">@Localizer["Role"]</a>
-        }
-        else if (User.IsInRole("User"))
-        {
-            <div class="text-center">
-                <h1 class="display-4">@Localizer["Welcome"] @User.Identity.Name</h1>
-                <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-            </div>
-        }
+<form method="post" asp-controller="Account" asp-action="LogOff">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="text-center">
+            <h1 class="display-4">@Localizer["WelcomeAdministrator"] @User.Identity.Name</h1>
+            <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        </div>
+        <a class="btn btn-outline-primary" asp-controller="Users" asp-action="Index">@Localizer["Users"]</a>
+        <a class="btn btn-outline-primary" asp-controller="TShirt" asp-action="CreateTopic">Add role</a>
+        <a class="btn btn-outline-primary" asp-controller="Roles" asp-action="Index">@Localizer["Role"]</a>
+    }
+    else if (User.IsInRole("User"))
+    {
+        <div class="text-center">
+            <h1 class="display-4">@Localizer["Welcome"] @User.Identity.Name</h1>
+            <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        </div>
+    }
 
-    </form>
+</form>
 }
 else
 {
     <h1 class="display-4 text-center">@Localizer["Welcome"]</h1>
 
 }
+
+<style>
+    .flex-container {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-flow: row wrap;
+        justify-content: space-around;
+    }
+</style>
+<div class="row align-items-baseline container pb-3 pr-sm-4">
+    @foreach (var img in Model)
+    {
+        <div class="card shadow-lg" style="margin-left:10px; width: 16rem;" width="250" >
+            <embed src="@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="250" />
+            <div class="card-body ellipsis">
+                <h4 class="card-text">@img.name</h4>
+                <p class="card-text">@img.description</p>
+                <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
+                    <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
+                </form>
+            </div>
+        </div>
+
+    }
+</div>
+
 
 <script src="~/dist/dropzone.js"></script>
 
@@ -92,199 +108,38 @@ else
     </div>
 </form>
 
-<form asp-controller="Home" asp-action="Upload" asp-antiforgery="false"
-      class="dropzone" id="UploadForm" enctype="multipart/form-data">
-    <div class="fallback">
-        <input name="file" type="file" multiple />
-        <input type="submit" value="Upload" />
-    </div>
-</form>
+@*<form asp-controller="Home" asp-action="Upload" asp-antiforgery="false"
+          class="dropzone" id="UploadForm" enctype="multipart/form-data">
+        <div class="fallback">
+            <input name="file" type="file" multiple />
+            <input type="submit" value="Upload" />
+        </div>
+    </form>*@
 
-<form action="/Home/UploadFiles" id="uploader" class="dropzone">
-    <div id="dropzone-drop-area" class="dropzone-drop-area">
-    </div>
-</form>
+@*<form action="/Home/UploadFiles" id="uploader" class="dropzone">
+        <div id="dropzone-drop-area" class="dropzone-drop-area">
+        </div>
+    </form>*@
 @*<form action="" method="post" enctype="multipart/form-data">
         <input type="file" name="file" />
     </form>*@
 
-<div class="row">
-    <div class="col-md-9">
-        <div id="dropzone">
-            <form action="/Home/Upload" class="dropzone needsclick dz-clickable" id="uploader">
-                <div class="dz-message needsclick">
-                    Drop files here or click to upload.<br>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<a class="btn btn-default btn-primary mb-3" onclick="document.querySelector('.image-loader').click()" href="#">Load image</a>
-<input class="image-loader" style="visibility: collapse; width: 0px;" type="file" onchange="upload(this.files[0])">
-<img class="company-image d-block" style="max-width: 300px; max-height: 150px;" src="~/server.svg" />
-<script>
-    string cors_location = (new UriBuilder(Request.Url.AbsoluteUri)
-  { Path = Url.Content("~cloudinary_cors.html") }).ToString();
-</script>
-
-<input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"
-       data-form-data=" ... upload options as html-escaped JSON data ... "></input>
-
-<script>
-
-    window.ondragover = function (e) { e.preventDefault() }
-    window.ondrop = function (e) { e.preventDefault(); upload(e.dataTransfer.files[0]); }
-    function upload(file) {
-
-        if (!file || !file.type.match(/image.*/)) return;
-
-        let spanUploading = document.createElement('div');
-        spanUploading.classList.add("fixed-bottom");
-        spanUploading.innerHTML = "Uploading";
-        document.body.appendChild(spanUploading);
-
-
-
-        var fd = new FormData();
-        fd.append("image", file);
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://api.imgur.com/3/image.json");
-        xhr.onload = function () {
-            let linkImage = JSON.parse(xhr.responseText).data.link;
-            document.querySelector('.company-image').src = linkImage;
-
-            document.getElementById("company-image").setAttribute('value', linkImage);
-
-            spanUploading.innerHTML = "uploaded";
-        }
-
-        xhr.setRequestHeader('Authorization', 'Client-ID 28aaa2e823b03b1');
-
-        xhr.send(fd);
-    }
-
-    var myDropzone = new Dropzone("div#myId", { url: "/file/post" });
-    $("div#myId").dropzone({ url: "/file/post" });
-</script>
-
-
-<div id="dropbox">
-    <h1>Upload files with to Cloudinary with HTML5 file upload</h1> Learn more in this blog post - <a href="https://cloudinary.com/blog/direct_upload_made_easy_from_browser_or_mobile_app_to_the_cloud">Direct upload made easy, from browser or mobile app to the cloud</a>
-
-    <form class="my-form">
-        <div class="form_line">
-            <h4>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</h4>
-            <div class="form_controls">
-                <div class="upload_button_holder">
-                    <input type="file" id="fileElem" multiple accept="image/*" style="display:none" onchange="handleFiles(this.files)">
-                    <a href="#" id="fileSelect">Select some files</a>
-                    <a href="#" id="urlSelect">URL Upload</a>
-                </div>
+@*<div class="row">
+        <div class="col-md-9">
+            <div id="dropzone">
+                <form action="/Home/Upload" class="dropzone needsclick dz-clickable" id="uploader">
+                    <div class="dz-message needsclick">
+                        Drop files here or click to upload.<br>
+                    </div>
+                </form>
             </div>
         </div>
-    </form>
-    <div class="progress-bar" id="progress-bar">
-        <div class="progress" id="progress"></div>
     </div>
-    <div id="gallery" />
-</div>
-</div>
 
-<script>
-    const cloudName = 'del5wrr12';
-    const unsignedUploadPreset = 'wschzlnr';
+    <a class="btn btn-default btn-primary mb-3" onclick="document.querySelector('.image-loader').click()" href="#">Load image</a>
+    <input class="image-loader" style="visibility: collapse; width: 0px;" type="file" onchange="upload(this.files[0])">
+    <img class="company-image d-block" style="max-width: 300px; max-height: 150px;" src="~/server.svg" />*@
+<form asp-controller="Image" method="get">
+    <button type="submit" asp-controller="Image" asp-action="CreateShirt">Create</button>
+</form>
 
-    var fileSelect = document.getElementById("fileSelect"),
-        fileElem = document.getElementById("fileElem"),
-        urlSelect = document.getElementById("urlSelect");
-
-    fileSelect.addEventListener("click", function (e) {
-        if (fileElem) {
-            fileElem.click();
-        }
-        e.preventDefault(); // prevent navigation to "#"
-    }, false);
-
-    urlSelect.addEventListener("click", function (e) {
-        uploadFile('https://res.cloudinary.com/demo/image/upload/sample.jpg')
-        e.preventDefault(); // prevent navigation to "#"
-    }, false);
-
-
-    // ************************ Drag and drop ***************** //
-    function dragenter(e) {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    function dragover(e) {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    dropbox = document.getElementById("dropbox");
-    dropbox.addEventListener("dragenter", dragenter, false);
-    dropbox.addEventListener("dragover", dragover, false);
-    dropbox.addEventListener("drop", drop, false);
-
-    function drop(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        var dt = e.dataTransfer;
-        var files = dt.files;
-
-        handleFiles(files);
-    }
-
-    // *********** Upload file to Cloudinary ******************** //
-    function uploadFile(file) {
-        var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-        var xhr = new XMLHttpRequest();
-        var fd = new FormData();
-        xhr.open('POST', url, true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-        // Reset the upload progress bar
-        document.getElementById('progress').style.width = 0;
-
-        // Update progress (can be used to show progress indicator)
-        xhr.upload.addEventListener("progress", function (e) {
-            var progress = Math.round((e.loaded * 100.0) / e.total);
-            document.getElementById('progress').style.width = progress + "%";
-
-            console.log(`fileuploadprogress data.loaded: ${e.loaded},
-  data.total: ${e.total}`);
-        });
-
-        xhr.onreadystatechange = function (e) {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                // File uploaded successfully
-                var response = JSON.parse(xhr.responseText);
-                // https://res.cloudinary.com/cloudName/image/upload/v1483481128/public_id.jpg
-                var url = response.secure_url;
-                alert(url);
-                // Create a thumbnail of the uploaded image, with 150px width
-                var tokens = url.split('/');
-                tokens.splice(-2, 0, 'w_150,c_scale');
-                var img = new Image(); // HTML5 Constructor
-                img.src = tokens.join('/');
-                img.alt = response.public_id;
-                document.getElementById('gallery').appendChild(img);
-            }
-        };
-
-        fd.append('upload_preset', unsignedUploadPreset);
-        fd.append('tags', 'browser_upload'); // Optional - add tag for image admin in Cloudinary
-        fd.append('file', file);
-        xhr.send(fd);
-    }
-
-    // *********** Handle selected files ******************** //
-    var handleFiles = function (files) {
-        for (var i = 0; i < files.length; i++) {
-            uploadFile(files[i]); // call the function to upload the file
-        }
-    };
-</script>

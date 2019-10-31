@@ -4,3 +4,31 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+<style>
+    .flex-container {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-flow: row wrap;
+        justify-content: space-around;
+    }
+</style>
+<div class="main-section p-3 border mt-3 clearfix d-flex flex-wrap justify-content-between  align-items-baseline">
+    @foreach (var img in Model)
+    {
+        <div class="card " style="width: 18rem;" width="250">
+            <embed src = "@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="250" />
+            <div class="card-body">
+                <h4 class="card-text">@img.name</h4>
+                <p class="card-text">@img.description</p>
+                <button class="btn float-right btn-primary">More</button>
+            </div>
+        </div>
+
+    }
+</div>
