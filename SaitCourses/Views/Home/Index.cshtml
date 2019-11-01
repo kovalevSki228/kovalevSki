@@ -2,6 +2,7 @@
 @inject IViewLocalizer Localizer
 
 
+
 <style>
     #dropbox {
         border: 4px dashed #ccc;
@@ -39,28 +40,30 @@
     ViewData["Title"] = "Home Page";
 }
 
+
+
 @if (User.Identity.IsAuthenticated)
 {
-<form method="post" asp-controller="Account" asp-action="LogOff">
-    @if (User.IsInRole("Admin"))
-    {
-        <div class="text-center">
-            <h1 class="display-4">@Localizer["WelcomeAdministrator"] @User.Identity.Name</h1>
-            <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-        </div>
-        <a class="btn btn-outline-primary" asp-controller="Users" asp-action="Index">@Localizer["Users"]</a>
-        <a class="btn btn-outline-primary" asp-controller="TShirt" asp-action="CreateTopic">Add role</a>
-        <a class="btn btn-outline-primary" asp-controller="Roles" asp-action="Index">@Localizer["Role"]</a>
-    }
-    else if (User.IsInRole("User"))
-    {
-        <div class="text-center">
-            <h1 class="display-4">@Localizer["Welcome"] @User.Identity.Name</h1>
-            <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-        </div>
-    }
+    <form method="post" asp-controller="Account" asp-action="LogOff">
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="text-center">
+                <h1 class="display-4">@Localizer["WelcomeAdministrator"] @User.Identity.Name</h1>
+                <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+            </div>
+            <a class="btn btn-outline-primary" asp-controller="Users" asp-action="Index">@Localizer["Users"]</a>
+            <a class="btn btn-outline-primary" asp-controller="TShirt" asp-action="CreateTopic">Add role</a>
+            <a class="btn btn-outline-primary" asp-controller="Roles" asp-action="Index">@Localizer["Role"]</a>
+        }
+        else if (User.IsInRole("User"))
+        {
+            <div class="text-center">
+                <h1 class="display-4">@Localizer["Welcome"] @User.Identity.Name</h1>
+                <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+            </div>
+        }
 
-</form>
+    </form>
 }
 else
 {
@@ -82,10 +85,27 @@ else
         justify-content: space-around;
     }
 </style>
-<div class="row align-items-baseline container pb-3 pr-sm-4">
-    @foreach (var img in Model)
+
+<select class="form-control field-input mb-5 col-md-6">
+    <option value="@Model.topic[0].nameTopic">@Model.topic[0].nameTopic</option>
+    @foreach(var topic in Model.topic)
     {
-        <div class="card shadow-lg" style="margin-left:10px; width: 16rem;" width="250" >
+        <option value="@topic.nameTopic">@topic.nameTopic</option>
+    }
+</select>
+
+<select class="form-control field-input mb-5 col-md-6">
+    <option value="@Model.tag[0].name">@Model.tag[0].name</option>
+    @foreach (var tag in Model.tag)
+        {
+            <option value="@tag.name">@tag.name</option>
+        }
+</select>
+
+<div class="row align-items-baseline container pb-3 pr-sm-4">
+    @foreach (var img in Model.shirt)
+    {
+        <div class="card shadow-lg" style="margin-left:10px; width: 16rem;" width="250">
             <embed src="@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="250" />
             <div class="card-body ellipsis">
                 <h4 class="card-text">@img.name</h4>

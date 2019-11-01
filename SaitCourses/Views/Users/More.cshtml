@@ -34,13 +34,18 @@
                             <input id="@buf" asp-for="@Model.ratings[i]" class="mark-check d-none mr-1" />
                         }
                         <input type="hidden" asp-for="@Model.id" />
-                        <button class="btn btn-default btn-primary p-1 ml-3" type="submit">Send</button>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button class="btn btn-default btn-primary p-1 ml-3" type="submit">Send</button>
+                        }
                     </form>
                     <h2 id="Tname">T-Shirts name</h2>
                     <p class="text">@Model.TShirtName</p>
                     <p id="price">$30.00</p>
                     <p class="font700">Description</p>
                     <p class="text">@Model.description</p>
+                    <p class="font700">Data </p>
+                    <p class="text">@Model.data</p>
                     <hr id="line">
                     <p class="font700">size</p>
                     <div class="container">

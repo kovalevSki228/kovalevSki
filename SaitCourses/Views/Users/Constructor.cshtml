@@ -25,20 +25,42 @@
                     <form class="my-form" method="post" asp-controller="Image" asp-action="Constructor">
                         <h2 id="Tname">T-Shirts name:</h2>
                         <input asp-for="TShirtName" type="text">
-                        <p id="price">Price:</p>
-                        <input type="text">
-                        <p class="font700">Description:</p>
+                        <p>Description:</p>
                         <input asp-for="description" type="text">
+                        <p>Topic:</p>
                         <input id="imageLink" asp-for="image" hidden />
                         <select class="form-control field-input mb-5 col-md-6" asp-for="Topic">
-                            <option value="">Select Industries...</option>
-                            @for (int i = 0; i < Model.Topics.Length; i++)
+                            <option value="@Model.Topics[0]">@Model.Topics[0]</option>
+                            @for (int i = 1; i < Model.Topics.Length; i++)
                             {
                                 <option value="@Model.Topics[i]">@Model.Topics[i]</option>
                             }
                         </select>
                         <button type="submit" id="imageLink2" hidden></button>
+                        <div id="containerTag" style="display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px;"></div>
+
+                        <div>
+                            <input asp-for="Tag" id="inputTag" onchange="tag()" />
+                        </div>
+
+                        <script>
+                            function tag() {
+                                let containerTag = document.getElementById("containerTag");
+                                containerTag.innerHTML = "";
+                                let text = document.getElementById("inputTag").value;
+                                text = text.replace('  ', ' ');
+                                let word = text.split(' ');
+                                for (i = 0; i < word.length; i++) {
+                                    if (word[i].Trim !== '') {
+                                        let div = document.createElement("div");
+                                        div.innerHTML = "<div class=\"styleTag\" style=\"padding: 2px; border: 1px solid black; border-radius: 10px; margin-right: 10px; margin-bottom: 5px;\">" + word[i] + "</div>";
+                                        containerTag.appendChild(div);
+                                    }
+                                }
+                            }
+                        </script>
                         <hr id="line">
+
                     </form>
                     <!-- ---------------------------------------------------------------------------------- -->
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -67,6 +89,8 @@
                             <input type="radio" name="filter" value="none" onchange="changeImageFilter('none')">Women
                         </label>
                     </div>
+
+                    
                     <!-------------------------------------------------------------------------------------  -->
                     <div class="container">
                         <div class="row">
@@ -150,6 +174,7 @@
 
 </body>
 </html>
+
 
 
     

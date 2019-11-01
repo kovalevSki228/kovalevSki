@@ -13,6 +13,7 @@ using Microsoft.Extensions.Localization;
 using System.IO;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
+using SaitCourses.ViewModels;
 
 namespace SaitCourses.Controllers
 {
@@ -32,11 +33,18 @@ namespace SaitCourses.Controllers
 
         public IActionResult Index()
         {
-            return View(_db.tshirts.ToList());
+
+            return View(new HomeViewModel
+            {
+                shirt = _db.tshirts.ToList(),
+                tag = _db.tags.ToList(),
+                topic = _db.topics.ToList()
+            });
         }
 
         public IActionResult Privacy()
         {
+            
             return View(_db.tshirts.ToList());
         }
 

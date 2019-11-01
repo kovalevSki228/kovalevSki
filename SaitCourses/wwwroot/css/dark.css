@@ -10,6 +10,11 @@
     border-color: black !important;
 }
 
+.styleTag{
+    border-color: white !important;
+    background-color: black !important;
+}
+
 .card {
     background-color: #040404 !important;
 }

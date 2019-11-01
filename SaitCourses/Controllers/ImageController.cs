@@ -55,6 +55,9 @@ namespace SaitCourses.Controllers
             //{
             var topics = _db.topics.FirstOrDefault(item => item.nameTopic == model.Topic);
             User user = await _userManager.GetUserAsync(User);
+            string tag = model.Tag.Replace("  ", " ");
+            string[] tags = tag.Split(' ');
+          
             _db.tshirts.Add(new Shirt
             {
                 //     tShirt = shirt,
@@ -62,12 +65,28 @@ namespace SaitCourses.Controllers
                 name = model.TShirtName,
                 description = model.description,
                 userId = user.Id,
-                themeId = topics.id
+                themeId = topics.id,
+                createDate = DateTime.Now.ToString("MM/dd/yyyy")
                 //users = user
             });; 
             //}
             await _db.SaveChangesAsync();
-
+            for (int i = 0; i < tags.Length; i++)
+            {
+                if (_db.tags.FirstOrDefault(item => item.name == tags[i]) == null)
+                {
+                    _db.tags.Add(new Tag { name = tags[i] });
+                    await _db.SaveChangesAsync();
+                }
+                Shirt shirt = _db.tshirts.FirstOrDefault(item => item.name == model.TShirtName);
+                Tag tag1 = _db.tags.FirstOrDefault(item => item.name == tags[i]);
+                _db.tagInTShirts.Add(new TagInTShirt
+                {
+                    shirtid = shirt.id,
+                    tagid = tag1.id
+                });
+                await _db.SaveChangesAsync();
+            }
             return RedirectToAction("Constructor", "Users");
         }
         public IActionResult Index()

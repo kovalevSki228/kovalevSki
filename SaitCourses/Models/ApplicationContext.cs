@@ -17,7 +17,9 @@ namespace SaitCourses.Models
         public DbSet<Shirt> tshirts { get; set;}
         public DbSet<Rating> ratings { get; set; }
         public DbSet<Topic> topics { get; set; }
- 
+        public DbSet<Tag> tags { get; set; }
+        public DbSet<Basket> baskets { get; set; }
+        public DbSet<TagInTShirt> tagInTShirts { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             :base(options)
         {

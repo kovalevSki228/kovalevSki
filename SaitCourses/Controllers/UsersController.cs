@@ -76,11 +76,13 @@ namespace SaitCourses.Controllers
         public IActionResult Constructor()
         {
             string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
+
             return View(new TShitsViewModel { 
                 TShirtName = "name",
                 description = "description",
-                Topics = topics
-            });;
+                Topics = topics,
+                Tegs = _db.tags.Select(item => item.name).ToArray()
+            });
         }
 
 
@@ -125,7 +127,7 @@ namespace SaitCourses.Controllers
                     }
                 }
             }
-            return View(new TShitsViewModel { id = result.id, description = result.description, TShirtName = result.name, image = result.image, rating = marksRes, ratings = marks });
+            return View(new TShitsViewModel { id = result.id, description = result.description, TShirtName = result.name, image = result.image, rating = marksRes, ratings = marks, data = result.createDate });
         }
         [HttpPost]
         public async Task<IActionResult> Block(string id)
