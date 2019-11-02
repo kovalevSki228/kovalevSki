@@ -49,7 +49,6 @@
         {
             <div class="text-center">
                 <h1 class="display-4">@Localizer["WelcomeAdministrator"] @User.Identity.Name</h1>
-                <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
             </div>
             <a class="btn btn-outline-primary" asp-controller="Users" asp-action="Index">@Localizer["Users"]</a>
             <a class="btn btn-outline-primary" asp-controller="TShirt" asp-action="CreateTopic">Add role</a>
@@ -59,7 +58,6 @@
         {
             <div class="text-center">
                 <h1 class="display-4">@Localizer["Welcome"] @User.Identity.Name</h1>
-                <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
             </div>
         }
 
@@ -68,9 +66,16 @@
 else
 {
     <h1 class="display-4 text-center">@Localizer["Welcome"]</h1>
-
 }
 
+
+<select class="form-control field-input mb-5 col-md-6">
+    <option value="@Model.topic[0].nameTopic">@Model.topic[0].nameTopic</option>
+    @foreach (var topic in Model.topic)
+    {
+        <option value="@topic.nameTopic">@topic.nameTopic</option>
+    }
+</select>
 <style>
     .flex-container {
         padding: 0;
@@ -85,27 +90,20 @@ else
         justify-content: space-around;
     }
 </style>
-
-<select class="form-control field-input mb-5 col-md-6">
-    <option value="@Model.topic[0].nameTopic">@Model.topic[0].nameTopic</option>
-    @foreach(var topic in Model.topic)
-    {
-        <option value="@topic.nameTopic">@topic.nameTopic</option>
-    }
-</select>
-
-<select class="form-control field-input mb-5 col-md-6">
-    <option value="@Model.tag[0].name">@Model.tag[0].name</option>
+<h3 class="text-left">Tags:</h3>
+<div style=" display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px; border: 2px solid black; border-radius: 10px;" class="styleTag">
     @foreach (var tag in Model.tag)
-        {
-            <option value="@tag.name">@tag.name</option>
-        }
-</select>
+    {
+        <form asp-controller="Home" asp-action="Index" asp-route-tag="@tag.name" method="post">
+            <button type="submit" style="margin-left:5px;" class="btn btn-primary" asp-for="@tag.name">@tag.name</button>
+        </form>
+    }
+</div>
 
 <div class="row align-items-baseline container pb-3 pr-sm-4">
     @foreach (var img in Model.shirt)
     {
-        <div class="card shadow-lg" style="margin-left:10px; width: 16rem;" width="250">
+        <div class="card shadow-lg" style="margin-left:10px; margin-top:10px; width: 16rem;" width="250">
             <embed src="@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="250" />
             <div class="card-body ellipsis">
                 <h4 class="card-text">@img.name</h4>

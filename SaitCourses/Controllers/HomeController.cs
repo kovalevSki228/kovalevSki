@@ -31,6 +31,27 @@ namespace SaitCourses.Controllers
             _db = db;
         }
 
+        [HttpPost]
+        public IActionResult Index(string tag)
+        {
+            var tags = _db.tags.FirstOrDefault(item => item.name == tag);
+
+            var shirtid = _db.tagInTShirts.Where(item => item.tagid == tags.id).ToList();
+            Shirt[] _shirt = new Shirt[shirtid.Count];
+            int i = 0;
+            foreach (var shId in shirtid)
+            {
+                _shirt[i] = _db.tshirts.FirstOrDefault(item => item.id == shId.shirtid);
+                i++;
+            }
+
+            return View(new HomeViewModel
+            {
+                shirt = _shirt.ToList(),
+                tag = _db.tags.ToList(),
+                topic = _db.topics.ToList()
+            });
+        }
         public IActionResult Index()
         {
 
