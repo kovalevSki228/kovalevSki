@@ -64,7 +64,9 @@
                             </div>
                         </div>
                     </div>
-                    <button id="add" class="font700">Add to Bag</button>
+                    <form asp-controller="TShirt" asp-action="basket" asp-route-id="@Model.id" method="post">
+                        <button id="add" class="btn">Bay</button>
+                    </form>
                 </div>
             </div>
         </div>

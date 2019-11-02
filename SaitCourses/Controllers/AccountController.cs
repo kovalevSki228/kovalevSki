@@ -44,28 +44,16 @@ namespace SaitCourses.Controllers
                 if (result.Succeeded)
                 {
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackurl = Url.Action("confirmemail",
-                    //    "account",
-                    //    new { userid = user.Id, code = code },
-                    //    protocol: HttpContext.Request.Scheme);
-                    //EmailService emailservice = new EmailService();
-                    //await emailservice.SendEmailAsync(model.Email, "confirm your account",
-                    //    $"to confirm registration, follow the link: <a href='{callbackurl}'>link</a>"))                        ;
+                    var callbackurl = Url.Action("confirmemail",
+                        "account",
+                        new { userid = user.Id, code = code },
+                        protocol: HttpContext.Request.Scheme);
+                    EmailService emailservice = new EmailService();
+                    await emailservice.SendEmailAsync(model.Email, "confirm your account",
+                        $"to confirm registration, follow the link: <a href='{callbackurl}'>link</a>");
 
-                    //return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
-                    IEnumerable<User> users = _db.Users.Select(item => item);
-
-                    if (_db.Users.Count() == 1)
-                    {
-                        await _userManager.AddToRoleAsync(user, "Admin");
-                        await _signInManager.SignInAsync(user, false);
-                    }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, "User");
-                        await _signInManager.SignInAsync(user, false);
-                    }
-                    return RedirectToAction("index", "home");
+                    return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+                    
                 }
                 else
                 {
@@ -111,38 +99,105 @@ namespace SaitCourses.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
-
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Name);
-                //if (user != null)
-                //{
-                //    if (!await _userManager.IsEmailConfirmedAsync(user))
-                //    {
-                //        ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
-                //        return View(model);
-                //    }
-                //}
-
-                var result =
-                    await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
-                if(result.Succeeded)
+                User user = await _userManager.FindByNameAsync(model.Name);
+                if (user != null)
                 {
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    bool emailConf = await _userManager.IsEmailConfirmedAsync(user);
+                    if (emailConf)
                     {
-                        return Redirect(model.ReturnUrl);
+                        bool blocked = await _userManager.GetLockoutEnabledAsync(user);
+                        if (blocked)
+                        {
+                            var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
+                            if (result.Succeeded)
+                            {
+                                if (_db.Users.Count() == 1)
+                                {
+                                    await _userManager.AddToRoleAsync(user, "Admin");
+                                    await _signInManager.SignInAsync(user, false);
+                                }
+                                else
+                                {
+                                    await _userManager.AddToRoleAsync(user, "User");
+                                    await _signInManager.SignInAsync(user, false);
+                                }
+                                return RedirectToAction("Index", "Home");
+                            }   
+                            else
+                                ModelState.AddModelError("", "Incorrect login or password");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "You account is blocked");
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        ModelState.AddModelError("", "Email wasn't confirm");
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid client");
+                    ModelState.AddModelError("", "Incorrect login or password");
                 }
             }
             return View(model);
+            //if(ModelState.IsValid)
+            //{
+            //    var user = await _userManager.FindByNameAsync(model.Name);
+            //    if (user != null)
+            //    {
+            //        if (!await _userManager.IsEmailConfirmedAsync(user))
+            //        {
+            //            IEnumerable<User> users = _db.Users.Select(item => item);
+
+            //            if (_db.Users.Count() == 1)
+            //            {
+            //                await _userManager.AddToRoleAsync(user, "Admin");
+            //                await _signInManager.SignInAsync(user, false);
+            //            }
+            //            else
+            //            {
+            //                await _userManager.AddToRoleAsync(user, "User");
+            //                await _signInManager.SignInAsync(user, false);
+            //            }
+            //            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            //            return RedirectToAction("index", "home");
+
+            //            ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
+            //           // return View(model);
+            //        }
+            //        else
+            //        {
+            //            ModelState.AddModelError("", "Не подтвержден email.");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        ModelState.AddModelError("", "Неверный логин или пароль");
+            //    }
+
+            //    //var result =
+            //    //    await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
+            //    //if (result.Succeeded)
+            //    //{
+            //    //    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+            //    //    {
+            //    //        return Redirect(model.ReturnUrl);
+            //    //    }
+            //    //    else
+            //    //    {
+            //    //        return RedirectToAction("Index", "Home");
+            //    //    }
+            //    //}
+            //    //else
+            //    //{
+            //    //    ModelState.AddModelError("", "Invalid client");
+            //    //}
+            //}
+            //return View(model);
         }
 
         public async Task<IActionResult> SwitchColor()

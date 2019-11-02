@@ -48,6 +48,31 @@ namespace SaitCourses.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult basket()
+        {
+            return View(_db.baskets.ToList());
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> basket(int id)
+        {
+            User user = await _userManager.GetUserAsync(User);
+            var result = _db.tshirts.FirstOrDefault(item => item.id == id);
+            _db.baskets.Add(new Basket
+            {
+                dataOfPurchase = DateTime.Now.ToString("MM/dd/yyyy"),
+                nameShirt = result.name,
+                amount = 1,
+                shirtid = result.id,
+             //   userId = user.Id,
+                purchaseStatus = false,
+            });
+            await _db.SaveChangesAsync();
+            return View(_db.baskets.ToList());
+        }
+
         public IActionResult Index() => View(_db.images.ToList());
         public IActionResult EditCampaign()
         {
