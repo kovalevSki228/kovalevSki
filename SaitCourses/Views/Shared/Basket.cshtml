@@ -3,13 +3,24 @@
 *@
 @{
 }
-@foreach (var Shirt in Model)
-{
     <table class="table">
-    <tr>
-        <td>@Shirt.nameShirt</td>
-        <td>@Shirt.amount</td>
-        <td>@Shirt.dataOfPurchase</td>
-    </tr>
-        </table>
-}
+        <tr><th>T-shirt name</th><th>Amount</th><th>Sex</th><th>Size</th><th>Order date</th></tr>
+        @foreach (var Shirt in Model.basket)
+        {
+            if (Shirt.userId == Model.userId && Shirt.purchaseStatus == false)
+            {
+
+                <tr>
+                    <td>@Shirt.nameShirt</td>
+                    <td>@Shirt.amount</td>
+                    <td>@Shirt.sex</td>
+                    <td>@Shirt.size</td>
+                    <td>@Shirt.dataOfPurchase</td>
+                </tr>
+
+            }
+        }
+    </table>
+<form asp-controller="TShirt" asp-action="Bay" asp-route-id="Model.userId" method="post">
+    <button type="submit" class="btn">Bay</button>
+</form>

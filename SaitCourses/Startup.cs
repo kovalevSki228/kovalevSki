@@ -82,6 +82,7 @@ namespace SaitCourses
                 options.SupportedUICultures = supportedCultures;
 
             });
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -100,6 +101,10 @@ namespace SaitCourses
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<CommentsHub>("/Comments");
+            });
 
             var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(locOptions.Value);

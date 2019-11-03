@@ -36,6 +36,7 @@
                                 <option value="@Model.Topics[i]">@Model.Topics[i]</option>
                             }
                         </select>
+                        
                         <button type="submit" id="imageLink2" hidden></button>
                         <div id="containerTag" style="display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px;"></div>
 
@@ -59,6 +60,8 @@
                                 }
                             }
                         </script>
+
+
                         <hr id="line">
 
                     </form>
@@ -77,16 +80,16 @@
                     <!-- ---------------------------------------------------------------------------------- -->
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-secondary active">
-                            <input type="radio" name="filter" value="blackAndWhite" onchange="changeImageFilter('blackAndWhite')">Man
+                            <input type="radio" name="filter" value="blackAndWhite" onchange="changeImageFilter('blackAndWhite')">Black & White
                         </label>
                         <label class="btn btn-secondary">
-                            <input type="radio" name="filter" value="sepia" onchange="changeImageFilter('sepia')">Women
+                            <input type="radio" name="filter" value="sepia" onchange="changeImageFilter('sepia')">Sepia
                         </label>
                         <label class="btn btn-secondary">
-                            <input type="radio" name="filter" value="pixelate" onchange="changeImageFilter('pixelate')">Women
+                            <input type="radio" name="filter" value="pixelate" onchange="changeImageFilter('pixelate')">Pixelate
                         </label>
                         <label class="btn btn-secondary">
-                            <input type="radio" name="filter" value="none" onchange="changeImageFilter('none')">Women
+                            <input type="radio" name="filter" value="none" onchange="changeImageFilter('none')">NONE
                         </label>
                     </div>
 

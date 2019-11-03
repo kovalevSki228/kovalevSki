@@ -66,7 +66,8 @@ namespace SaitCourses.Controllers
                 description = model.description,
                 userId = user.Id,
                 themeId = topics.id,
-                createDate = DateTime.Now.ToString("MM/dd/yyyy")
+                createDate = DateTime.Now.ToString("MM/dd/yyyy"),
+                Sex = model.sex
                 //users = user
             });; 
             //}

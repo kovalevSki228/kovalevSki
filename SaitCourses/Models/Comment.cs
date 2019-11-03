@@ -9,6 +9,7 @@ namespace SaitCourses.Models
     {
         public int id { get; set; }
         public string text { get; set; }
+        public int like { get; set; }
         public string userId { get; set; }
         public User user { get; set; }
         public int tShirtId { get; set; }

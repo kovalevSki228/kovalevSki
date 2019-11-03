@@ -179,7 +179,11 @@ namespace SaitCourses.Migrations
 
                     b.Property<bool>("purchaseStatus");
 
+                    b.Property<string>("sex");
+
                     b.Property<int>("shirtid");
+
+                    b.Property<string>("size");
 
                     b.Property<string>("userId");
 
@@ -190,6 +194,29 @@ namespace SaitCourses.Migrations
                     b.HasIndex("userId");
 
                     b.ToTable("baskets");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Comment", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("like");
+
+                    b.Property<int>("tShirtId");
+
+                    b.Property<string>("text");
+
+                    b.Property<string>("userId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("tShirtId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("comments");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Image", b =>
@@ -209,6 +236,23 @@ namespace SaitCourses.Migrations
                     b.HasKey("id");
 
                     b.ToTable("images");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Like", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("like");
+
+                    b.Property<int>("shirtId");
+
+                    b.Property<string>("userId");
+
+                    b.HasKey("id");
+
+                    b.ToTable("likes");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Rating", b =>
@@ -240,6 +284,8 @@ namespace SaitCourses.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Sex");
+
                     b.Property<string>("createDate");
 
                     b.Property<string>("description");
@@ -257,6 +303,31 @@ namespace SaitCourses.Migrations
                     b.HasIndex("userId");
 
                     b.ToTable("tshirts");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.TShirt", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("createDate");
+
+                    b.Property<string>("description");
+
+                    b.Property<string>("image");
+
+                    b.Property<string>("name");
+
+                    b.Property<int>("themeId");
+
+                    b.Property<string>("userId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("TShirt");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Tag", b =>
@@ -433,6 +504,18 @@ namespace SaitCourses.Migrations
                         .HasForeignKey("userId");
                 });
 
+            modelBuilder.Entity("SaitCourses.Models.Comment", b =>
+                {
+                    b.HasOne("SaitCourses.Models.TShirt", "tShirt")
+                        .WithMany()
+                        .HasForeignKey("tShirtId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SaitCourses.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("userId");
+                });
+
             modelBuilder.Entity("SaitCourses.Models.Rating", b =>
                 {
                     b.HasOne("SaitCourses.Models.Shirt", "shirt")
@@ -446,6 +529,13 @@ namespace SaitCourses.Migrations
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Shirt", b =>
+                {
+                    b.HasOne("SaitCourses.Models.User", "users")
+                        .WithMany()
+                        .HasForeignKey("userId");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.TShirt", b =>
                 {
                     b.HasOne("SaitCourses.Models.User", "users")
                         .WithMany()

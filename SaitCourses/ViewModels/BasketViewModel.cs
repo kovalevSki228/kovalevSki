@@ -11,7 +11,10 @@ namespace SaitCourses.ViewModels
         public int id { get; set; }
         public string nameShirt { get; set; }
         public string dataOfPurchase { get; set; }
-        public int userId { get; set; }
+        public string userId { get; set; }
+        public IEnumerable<Basket> basket { get; set; }
+        public string size { get; set; }
+        public string sex { get; set; }
         public User user { get; set; }
         public int shirtid { get; set; }
         public Shirt shirt { get; set; }

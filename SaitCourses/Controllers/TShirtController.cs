@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SaitCourses.Models;
 using SaitCourses.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using SaitCourses;
 
 namespace SaitCourses.Controllers
 {
@@ -37,6 +38,8 @@ namespace SaitCourses.Controllers
             }
             return RedirectToAction("Setting", "Users");
         }
+        public IActionResult CreateTopic() => View();
+        [HttpPost]
         public async Task<IActionResult> CreateTopic(string name)
         {
 
@@ -49,15 +52,22 @@ namespace SaitCourses.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult basket()
+        public async Task<IActionResult> basket()
         {
-            return View(_db.baskets.ToList());
+            User user = await _userManager.GetUserAsync(User);
+            var _basket = _db.baskets.Where(item => item.userId == user.Id).ToList();
+            return View(new BasketViewModel
+            {
+                userId = user.Id,
+                basket = _basket.ToList()
+            });
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> basket(int id)
+        public async Task<IActionResult> basket(int id, BasketViewModel model)
         {
+            
             User user = await _userManager.GetUserAsync(User);
             var result = _db.tshirts.FirstOrDefault(item => item.id == id);
             _db.baskets.Add(new Basket
@@ -66,11 +76,39 @@ namespace SaitCourses.Controllers
                 nameShirt = result.name,
                 amount = 1,
                 shirtid = result.id,
-             //   userId = user.Id,
+                userId = user.Id,
                 purchaseStatus = false,
+                sex = model.sex,
+                size = model.size
+
             });
             await _db.SaveChangesAsync();
-            return View(_db.baskets.ToList());
+            var _basket = _db.baskets.Where(item => item.userId == user.Id).ToList();
+            return View(new BasketViewModel { 
+                userId = user.Id,
+                basket = _basket.ToList()
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Bay(int id)
+        {
+            User user = await _userManager.GetUserAsync(User);
+            //var result = _db.tshirts.FirstOrDefault(item => item.id == id);
+            var result = _db.baskets.Where(item => item.userId == user.Id && item.purchaseStatus == false).ToList();
+            string message = "";
+            foreach(var status in result)
+            {
+                status.purchaseStatus = true;
+                message += "\n" + status.nameShirt.ToString() + ", price 15 $";
+                _db.baskets.Update(status);
+                await _db.SaveChangesAsync();
+            }            
+            EmailService emailservice = new EmailService();
+
+            await emailservice.SendEmailAsync(user.Email, "Purchase",
+                "you bought t-shirts: "+message);
+            return View("Bay");
         }
 
         public IActionResult Index() => View(_db.images.ToList());

@@ -127,8 +127,19 @@ namespace SaitCourses.Controllers
                     }
                 }
             }
-            return View(new TShitsViewModel { id = result.id, description = result.description, TShirtName = result.name, image = result.image, rating = marksRes, ratings = marks, data = result.createDate });
+            var comments = _db.comments.Where(item => item.tShirtId == id).ToArray();
+            return View(new TShitsViewModel { 
+                id = result.id,
+                description = result.description,
+                TShirtName = result.name, 
+                image = result.image,
+                rating = marksRes, 
+                ratings = marks, 
+                data = result.createDate,
+                comments = comments.ToArray()
+            });
         }
+
         [HttpPost]
         public async Task<IActionResult> Block(string id)
         {

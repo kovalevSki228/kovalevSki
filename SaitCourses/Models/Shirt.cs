@@ -14,6 +14,7 @@ namespace SaitCourses.Models
         public string userId { get; set; }
         public int themeId { get; set; }
         public string image { get; set; }
+        public string Sex { get; set; }
         public User users { get; set; }
     }
 }

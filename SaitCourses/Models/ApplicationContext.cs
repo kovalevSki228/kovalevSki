@@ -12,6 +12,7 @@ namespace SaitCourses.Models
     {
        // public DbSet<TShirt> shirts { get; set; }
         //public DbSet<Comment> comments { get; set; }
+        
         public DbSet<Image> images { get; set; }
         public DbSet<Theme> themes { get; set; }
         public DbSet<Shirt> tshirts { get; set;}
@@ -22,6 +23,8 @@ namespace SaitCourses.Models
         public DbSet<TagInTShirt> tagInTShirts { get; set; }
         public DbSet<Achievement> achievements { get; set; }
         public DbSet<AchievementsUsers> achievementsUsers { get; set; }
+        public DbSet<Comment> comments { get; set; }
+        public DbSet<Like> likes { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             :base(options)
         {
