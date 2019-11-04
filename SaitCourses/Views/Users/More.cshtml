@@ -74,10 +74,16 @@
             </div>
         </div>
     </div>
+    @*<div id="inputForm">
+        <input type="text" id="message" />
+        <input type="button" id="sendBtn" value="Отправить" />
+    </div>*@
+
     <div>
-        <textarea rows=3 id="comment" class="form-control mb-3" placeholder="Comment text"></textarea>
+        <textarea rows=3 id="message" class="form-control mb-3" placeholder="Comment text"></textarea>
         <button class="btn btn-default btn-primary mb-3" id="sendBtn">Send</button>
     </div>
+    <div id="chatroom"></div>
     <div class="container">
         <div class="main-section p-3 border mt-3 clearfix d-none">
 
@@ -98,16 +104,11 @@
         </div>
     </div>
     <div class="container">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" id="inputComment">
-            <div class="input-group-append">
-                <button id="comment" class="">Button</button>
-            </div>
-        </div>
+        
     </div>
 </body>
 </html>
-<script src="~/js/signalr.min.js" defer></script>
+<script src="~/js/signalr.min.js" ></script>
 <script src="~/js/CommentHub.js" defer></script>
 <script src="~/js/ShowCompany.js" defer></script>
 <script>
