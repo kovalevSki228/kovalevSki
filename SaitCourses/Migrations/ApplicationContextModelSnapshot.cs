@@ -305,31 +305,6 @@ namespace SaitCourses.Migrations
                     b.ToTable("tshirts");
                 });
 
-            modelBuilder.Entity("SaitCourses.Models.TShirt", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("createDate");
-
-                    b.Property<string>("description");
-
-                    b.Property<string>("image");
-
-                    b.Property<string>("name");
-
-                    b.Property<int>("themeId");
-
-                    b.Property<string>("userId");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("TShirt");
-                });
-
             modelBuilder.Entity("SaitCourses.Models.Tag", b =>
                 {
                     b.Property<int>("id")
@@ -506,7 +481,7 @@ namespace SaitCourses.Migrations
 
             modelBuilder.Entity("SaitCourses.Models.Comment", b =>
                 {
-                    b.HasOne("SaitCourses.Models.TShirt", "tShirt")
+                    b.HasOne("SaitCourses.Models.Shirt", "tShirt")
                         .WithMany()
                         .HasForeignKey("tShirtId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -529,13 +504,6 @@ namespace SaitCourses.Migrations
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Shirt", b =>
-                {
-                    b.HasOne("SaitCourses.Models.User", "users")
-                        .WithMany()
-                        .HasForeignKey("userId");
-                });
-
-            modelBuilder.Entity("SaitCourses.Models.TShirt", b =>
                 {
                     b.HasOne("SaitCourses.Models.User", "users")
                         .WithMany()

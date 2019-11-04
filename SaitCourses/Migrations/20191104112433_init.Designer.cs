@@ -10,8 +10,8 @@ using SaitCourses.Models;
 namespace SaitCourses.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20191102161120_MigrateDB18")]
-    partial class MigrateDB18
+    [Migration("20191104112433_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -181,7 +181,11 @@ namespace SaitCourses.Migrations
 
                     b.Property<bool>("purchaseStatus");
 
+                    b.Property<string>("sex");
+
                     b.Property<int>("shirtid");
+
+                    b.Property<string>("size");
 
                     b.Property<string>("userId");
 
@@ -192,6 +196,29 @@ namespace SaitCourses.Migrations
                     b.HasIndex("userId");
 
                     b.ToTable("baskets");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Comment", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("like");
+
+                    b.Property<int>("tShirtId");
+
+                    b.Property<string>("text");
+
+                    b.Property<string>("userId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("tShirtId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("comments");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Image", b =>
@@ -211,6 +238,23 @@ namespace SaitCourses.Migrations
                     b.HasKey("id");
 
                     b.ToTable("images");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Like", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("like");
+
+                    b.Property<int>("shirtId");
+
+                    b.Property<string>("userId");
+
+                    b.HasKey("id");
+
+                    b.ToTable("likes");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Rating", b =>
@@ -241,6 +285,8 @@ namespace SaitCourses.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Sex");
 
                     b.Property<string>("createDate");
 
@@ -428,6 +474,18 @@ namespace SaitCourses.Migrations
                     b.HasOne("SaitCourses.Models.Shirt", "shirt")
                         .WithMany()
                         .HasForeignKey("shirtid")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SaitCourses.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("userId");
+                });
+
+            modelBuilder.Entity("SaitCourses.Models.Comment", b =>
+                {
+                    b.HasOne("SaitCourses.Models.Shirt", "tShirt")
+                        .WithMany()
+                        .HasForeignKey("tShirtId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SaitCourses.Models.User", "user")

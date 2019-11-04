@@ -13,6 +13,6 @@ namespace SaitCourses.Models
         public string userId { get; set; }
         public User user { get; set; }
         public int tShirtId { get; set; }
-        public TShirt tShirt { get; set; }
+        public Shirt tShirt { get; set; }
     }
 }

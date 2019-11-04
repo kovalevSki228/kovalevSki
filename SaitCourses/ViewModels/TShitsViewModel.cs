@@ -26,15 +26,17 @@ namespace SaitCourses.ViewModels
         public string[] Topics { get; set; }
         public string Tag { get; set; }
         public string[] Tegs { get; set; }
-        public Comment[] comments { get; set; }
+        public CommentsView[] comments { get; set; }
     }
     public class CommentsView
     {
         public int id { get; set; }
-        public string userId { get; set; }
+        public string userName { get; set; }
         public string Text { get; set; }
-        public int Like { get; set; }
+        public int like { get; set; }
+        public int commentId { get; set; }
     }
+
 
     public class HomeViewModel
     {

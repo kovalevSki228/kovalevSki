@@ -2,7 +2,7 @@
 <html>
 <script>
     let userName = "@User.Identity.Name";
-    let shirt = "@Model.id"
+    let shirtId = "@Model.id"
 </script>
 <head>
     <title>lego</title>
@@ -79,25 +79,24 @@
         <input type="button" id="sendBtn" value="Отправить" />
     </div>*@
 
-    <div>
-        <textarea rows=3 id="message" class="form-control mb-3" placeholder="Comment text"></textarea>
-        <button class="btn btn-default btn-primary mb-3" id="sendBtn">Send</button>
-    </div>
-    <div id="chatroom"></div>
+    
     <div class="container">
-        <div class="main-section p-3 border mt-3 clearfix d-none">
-
+        <div class="main-section p-3 border mt-3 clearfix">
+            <div>
+                <textarea rows=3 id="message" class="form-control mb-3" placeholder="Comment text"></textarea>
+                <button class="btn btn-default btn-primary mb-3" id="sendBtn">Send</button>
+            </div>
             <div id="comments-list">
                 @for (int i = 0; i < Model.comments.Length; i++)
                 {
                     <div class="border rounded p-3 mb-3">
-                        <h2 class="author">@Model.comments[i].userId</h2>
-                        <p class="text-context">@Model.comments[i].text</p>
+                        <h2 class="author">@Model.comments[i].userName</h2>
+                        <p class="text-context">@Model.comments[i].Text</p>
                         <span>Rating: </span>
                         <span class="rating">@Model.comments[i].like</span>
-                        <a class="like ml-3"><img src="~/img/like.png" width="18" /></a>
-                        <a class="dislike ml-3"><img src="~/img/dislike.png" width="18" /></a>
-                        <input type="hidden" class="comment-id" value="@Model.comments[i].id" />
+                        <a class="like ml-3"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572829492/w2gh8giame3qj8q8smjp.png" width="18" /></a>
+                        <a class="dislike ml-3"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572829492/veslqx4w2mepqah3br1q.png" width="18" /></a>
+                        <input type="hidden" class="comment-id" value="@Model.comments[i].commentId" />
                     </div>
                 }
             </div>

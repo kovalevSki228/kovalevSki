@@ -32,11 +32,12 @@ namespace SaitCourses.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string tag)
+        public IActionResult Index(string tag, SortShirt sortShirt = SortShirt.NameAsc)
         {
             var tags = _db.tags.FirstOrDefault(item => item.name == tag);
 
             var shirtid = _db.tagInTShirts.Where(item => item.tagid == tags.id).ToList();
+
             Shirt[] _shirt = new Shirt[shirtid.Count];
             int i = 0;
             foreach (var shId in shirtid)
@@ -44,7 +45,7 @@ namespace SaitCourses.Controllers
                 _shirt[i] = _db.tshirts.FirstOrDefault(item => item.id == shId.shirtid);
                 i++;
             }
-
+            _shirt = _shirt.OrderBy(item => item.name).ToArray();
             return View(new HomeViewModel
             {
                 shirt = _shirt.ToList(),

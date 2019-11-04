@@ -128,6 +128,18 @@ namespace SaitCourses.Controllers
                 }
             }
             var comments = _db.comments.Where(item => item.tShirtId == id).ToArray();
+            CommentsView[] commentsView = new CommentsView[comments.Length];
+            for (int i = 0; i < comments.Length; i++)
+            {
+                commentsView[i] = new CommentsView
+                {
+                    like = comments[i].like,
+                    Text = comments[i].text,
+                    userName = _db.Users.FirstOrDefault(item => 
+                        item.Id == comments[i].userId).UserName,
+                    commentId = comments[i].id
+                };
+            }
             return View(new TShitsViewModel { 
                 id = result.id,
                 description = result.description,
@@ -136,7 +148,7 @@ namespace SaitCourses.Controllers
                 rating = marksRes, 
                 ratings = marks, 
                 data = result.createDate,
-                comments = comments.ToArray()
+                comments = commentsView 
             });
         }
 

@@ -125,38 +125,4 @@ else
     </div>
 </form>
 
-@*<form asp-controller="Home" asp-action="Upload" asp-antiforgery="false"
-          class="dropzone" id="UploadForm" enctype="multipart/form-data">
-        <div class="fallback">
-            <input name="file" type="file" multiple />
-            <input type="submit" value="Upload" />
-        </div>
-    </form>*@
-
-@*<form action="/Home/UploadFiles" id="uploader" class="dropzone">
-        <div id="dropzone-drop-area" class="dropzone-drop-area">
-        </div>
-    </form>*@
-@*<form action="" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" />
-    </form>*@
-
-@*<div class="row">
-        <div class="col-md-9">
-            <div id="dropzone">
-                <form action="/Home/Upload" class="dropzone needsclick dz-clickable" id="uploader">
-                    <div class="dz-message needsclick">
-                        Drop files here or click to upload.<br>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <a class="btn btn-default btn-primary mb-3" onclick="document.querySelector('.image-loader').click()" href="#">Load image</a>
-    <input class="image-loader" style="visibility: collapse; width: 0px;" type="file" onchange="upload(this.files[0])">
-    <img class="company-image d-block" style="max-width: 300px; max-height: 150px;" src="~/server.svg" />*@
-<form asp-controller="Image" method="get">
-    <button type="submit" asp-controller="Image" asp-action="CreateShirt">Create</button>
-</form>
 
