@@ -71,15 +71,16 @@
             <div>
                 <label asp-for="Password" class="control-label">@Localizer["Password"]</label>
                 <input type="text" asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password"></span>
+
             </div>
             <div>
                 <label asp-for="PasswordConfim" class="control-label">@Localizer["PasswordConfim"]</label>
                 <input type="text" asp-for="PasswordConfim" class="form-control" />
+                <span asp-validation-for="PasswordConfim"></span>
             </div>
-
-        </div>
-        <input type="submit" value="Add" class="btn btn-outline-primary" />
-    </form>
+            <input type="submit" value="Add" class="btn btn-outline-primary" />
+</form>
     @*@Html.Partial("Edit")*@
 </div>
 <div class="row align-items-baseline container pb-3 pr-sm-4 ">
@@ -96,10 +97,13 @@
                         <form asp-controller="TShirt" asp-action="Delete" asp-route-id="@img.id" method="post">
                             <button type="submit" class="btn btn-sm btn-danger"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572397986/oqlhs3sjy8orthqrhtth.png"></button>
                         </form>
-                        <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
-                           <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
+                        <form asp-controller="TShirt" asp-action="ShirtEdit" asp-route-id="@img.id">
+                            <button type="submit" class="btn btn-sm float-right btn-primary">Edit</button>
                         </form>
-                       
+                        <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
+                            <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
+                        </form>
+
                     </div>
                 </div>
             </div>

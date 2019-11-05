@@ -13,6 +13,7 @@
     <PackageReference Include="dropzone" Version="4.3.0" />
     <PackageReference Include="DropzoneMvc" Version="1.5.0" />
     <PackageReference Include="GitForWindows" Version="2.23.0" />
+    <PackageReference Include="Korzh.EasyQuery.Linq" Version="5.2.6" />
     <PackageReference Include="Localization.AspNetCore.TagHelpers" Version="0.6.0" />
     <PackageReference Include="MailKit" Version="2.3.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.7" />

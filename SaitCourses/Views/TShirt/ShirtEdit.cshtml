@@ -1,4 +1,4 @@
-@model SaitCourses.ViewModels.TShitsViewModel
+﻿@model SaitCourses.ViewModels.TShitsViewModel
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +22,7 @@
             </div>
             <div class="col-sm">
                 <div class="container">
-                    <form class="my-form" method="post" asp-controller="Image" asp-action="Constructor">
+                    <form class="my-form" method="post" asp-controller="TShirt" asp-action="Edit" asp-route-id="@Model.id">
                         <h2 id="Tname">T-Shirts name:</h2>
                         <input asp-for="TShirtName" type="text">
                         <p>Description:</p>
@@ -36,8 +36,8 @@
                                 <option value="@Model.Topics[i]">@Model.Topics[i]</option>
                             }
                         </select>
-                        
-                        <button type="submit" id="imageLink2" hidden></button>
+
+                        @*<button type="submit" id="imageLink2" hidden></button>*@
                         <div id="containerTag" style="display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px;"></div>
 
                         <div>
@@ -64,68 +64,66 @@
 
                         <hr id="line">
 
+
+                        <!-- ---------------------------------------------------------------------------------- -->
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-secondary active">
+                                <input type="radio" name="r" value="l" onchange="check()">Man
+                                <!--<input type="radio" name="sex" id="option1" autocomplete="off" checked onclick="check()">-->
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="r" value="2" onchange="check()">Women
+                                <!--<input type="radio" name="sex" id="option2" autocomplete="off" onclick="check()">-->
+                            </label>
+                        </div>
+                        <!-------------------------------------------------------------------------------------  -->
+                        <!-- ---------------------------------------------------------------------------------- -->
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-secondary active">
+                                <input type="radio" name="filter" value="blackAndWhite" onchange="changeImageFilter('blackAndWhite')">Black & White
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="filter" value="sepia" onchange="changeImageFilter('sepia')">Sepia
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="filter" value="pixelate" onchange="changeImageFilter('pixelate')">Pixelate
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" name="filter" value="none" onchange="changeImageFilter('none')">NONE
+                            </label>
+                        </div>
+
+
+                        <!-------------------------------------------------------------------------------------  -->
+                        <div class="container">
+                            <div class="row">
+                                <div class=".col-3 q">
+                                    <p class="">Color object:   <input type="color" class="" id="favcolor"></p>
+                                </div>
+                                <div class=".col-3 q">
+                                    <p class="">T-color: <input type="color" class="" id="tcolor"></p>
+                                </div>
+                                <div class=".col-3 q">
+                                    <label class="custom-file-upload">
+                                        <input type="file" id="file" />
+                                        <i class="fa fa-cloud-upload"></i>Upload File
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class=".col-3 q">
+                                    <button class="btn" type="submit" @*onclick="save()*@">Save</button>
+                                </div>
+                                <div class=".col-3 q">
+                                    <button class="	" onclick="f()">Delete selected object</button>
+                                </div>
+                                <div class=".col-3 q">
+                                    <button class="" onclick="text()">Add text</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="add" class="font700">Add to Bag</button>
                     </form>
-                    <!-- ---------------------------------------------------------------------------------- -->
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-secondary active">
-                            <input type="radio" name="r" value="l" onchange="check()">Man
-                            <!--<input type="radio" name="sex" id="option1" autocomplete="off" checked onclick="check()">-->
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="r" value="2" onchange="check()">Women
-                            <!--<input type="radio" name="sex" id="option2" autocomplete="off" onclick="check()">-->
-                        </label>
-                    </div>
-                    <!-------------------------------------------------------------------------------------  -->
-                    <!-- ---------------------------------------------------------------------------------- -->
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-secondary active">
-                            <input type="radio" name="filter" value="blackAndWhite" onchange="changeImageFilter('blackAndWhite')">Black & White
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="filter" value="sepia" onchange="changeImageFilter('sepia')">Sepia
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="filter" value="pixelate" onchange="changeImageFilter('pixelate')">Pixelate
-                        </label>
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="filter" value="none" onchange="changeImageFilter('none')">NONE
-                        </label>
-                    </div>
-
-                    
-                    <!-------------------------------------------------------------------------------------  -->
-                    <div class="container">
-                        <div class="row">
-                            <div class=".col-3 q">
-                                <p class="">Color object:   <input type="color" class="" id="favcolor"></p>
-                            </div>
-                            <div class=".col-3 q">
-                                <p class="">T-color: <input type="color" class="" id="tcolor"></p>
-                            </div>
-                            <div class=".col-3 q">
-                                <label class="custom-file-upload">
-                                    <input type="file" id="file" />
-                                    <i class="fa fa-cloud-upload"></i>Upload File
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class=".col-3 q">
-                                <button class="" onclick="save()">Save</button>
-
-
-
-                            </div>
-                            <div class=".col-3 q">
-                                <button class="	" onclick="f()">Delete selected object</button>
-                            </div>
-                            <div class=".col-3 q">
-                                <button class="" onclick="text()">Add text</button>
-                            </div>
-                        </div>
-                    </div>
-                    <button id="add" class="font700">Add to Bag</button>
                 </div>
             </div>
         </div>
@@ -143,7 +141,7 @@
             <div class="progress" id="progress"></div>
         </div>
     </div>
-   
+
     <script>$('.file-upload').file_upload();</script>
     <div class="file-upload-wrapper">
         <input type="file" id="input-file-now" class="file-upload" />
@@ -180,9 +178,9 @@
 
 
 
-    
-
 
 <script type="text/javascript" src="~/js/Constructor.js"></script>
+
+
 
 

@@ -7,6 +7,8 @@ using SaitCourses.Models;
 using SaitCourses.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using SaitCourses;
+using SaitCourses.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SaitCourses.Controllers
 {
@@ -21,7 +23,7 @@ namespace SaitCourses.Controllers
             _db = db;
             _userManager = userManager;
         }
-
+        [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> Delete(int id)
         {
             var rating = _db.ratings.FirstOrDefault(item => item.shirtid == id);
@@ -40,6 +42,7 @@ namespace SaitCourses.Controllers
         }
         public IActionResult CreateTopic() => View();
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateTopic(string name)
         {
 
@@ -50,6 +53,63 @@ namespace SaitCourses.Controllers
                 await _db.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Home");
+        }
+
+        [TypeFilter(typeof(UserFilters))]
+        public IActionResult ShirtEdit(int id)
+        {
+            
+            string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
+            Shirt shirt = _db.tshirts.FirstOrDefault(item => item.id == id);
+            return View(new TShitsViewModel
+            {
+                id = shirt.id,
+                TShirtName = shirt.name,
+                description = shirt.description,
+                Topics = topics,
+                Tegs = _db.tags.Select(item => item.name).ToArray()
+            });
+        }
+
+        [HttpPost]
+        [TypeFilter(typeof(UserFilters))]
+        public async Task<IActionResult> Edit(TShitsViewModel model)
+        {
+            var topics = _db.topics.FirstOrDefault(item => item.nameTopic == model.Topic);
+            User user = await _userManager.GetUserAsync(User);
+            string tag = model.Tag.Replace("  ", " ");
+            string[] tags = tag.Split(' ');
+            
+            var result = new Shirt
+            {
+                image = _db.tshirts.FirstOrDefault(item => item.id == model.id).image,
+                name = model.TShirtName,
+                description = model.description,
+                userId = user.Id,
+                themeId = topics.id,
+                createDate = DateTime.Now.ToString("MM/dd/yyyy"),
+                Sex = model.sex
+            };
+             _db.tshirts.Update(result);
+            //}
+            await _db.SaveChangesAsync();
+            for (int i = 0; i < tags.Length; i++)
+            {
+                if (_db.tags.FirstOrDefault(item => item.name == tags[i]) == null)
+                {
+                    _db.tags.Add(new Tag { name = tags[i] });
+                    await _db.SaveChangesAsync();
+                }
+                Shirt shirt = _db.tshirts.FirstOrDefault(item => item.name == model.TShirtName);
+                Tag tag1 = _db.tags.FirstOrDefault(item => item.name == tags[i]);
+                _db.tagInTShirts.Add(new TagInTShirt
+                {
+                    shirtid = shirt.id,
+                    tagid = tag1.id
+                });
+                await _db.SaveChangesAsync();
+            }
+            return View();
         }
 
         public async Task<IActionResult> basket()
@@ -63,7 +123,7 @@ namespace SaitCourses.Controllers
             });
         }
 
-
+        
         [HttpPost]
         public async Task<IActionResult> basket(int id, BasketViewModel model)
         {
@@ -110,52 +170,16 @@ namespace SaitCourses.Controllers
                 "you bought t-shirts: "+message);
             return View("Bay");
         }
-        //public async Task<IActionResult> Sort(SortShirt sortOrder = SortShirt.NameAsc)
-        //{
-        //    //IQueryable<User> users = db.Users.Include(x => x.Company);
-
-
-        //    IQueryable<Shirt> shirt = _db.tshirts.in;
-
-        //    ViewData["NameSort"] = sortShirt == SortShirt.NameAsc ? SortShirt.NameDesc : SortShirt.NameAsc;
-        //    ViewData["DataSort"] = sortShirt == SortShirt.DataAsc ? SortShirt.DataDesc : SortShirt.DataAsc;
-        //    ViewData["RatingSort"] = sortShirt == SortShirt.RatingAsc ? SortShirt.RatingDesc : SortShirt.RatingAsc;
-
-        //    switch (sortShirt)
-        //    {
-        //        case SortShirt.NameDesc:
-        //            shirt = _db.tshirts.OrderByDescending(item => item.name);
-        //            // users = users.OrderByDescending(s => s.Name);
-        //            break;
-        //        case SortShirt.DataAsc:
-        //            shirt = _db.tshirts.OrderBy(item => item.id);
-        //            //   users = users.OrderBy(s => s.Age);
-        //            break;
-        //        case SortShirt.DataDesc:
-        //            shirt = _db.tshirts.OrderByDescending(item => item.id);
-        //            //  users = users.OrderByDescending(s => s.Age);
-        //            break;
-        //        case SortShirt.RatingAsc:
-        //            //   users = users.OrderBy(s => s.Company.Name);
-        //            break;
-        //        case SortShirt.RatingDesc:
-        //            //    users = users.OrderByDescending(s => s.Company.Name);
-        //            break;
-        //        default:
-        //            shirt = _db.tshirts.OrderBy(item => item.name);
-        //            //  users = users.OrderBy(s => s.Name);
-        //            break;
-        //    }
-
-        //    return View(await shirt.AsNoTracking().ToListAsync());
-        //}
+        [TypeFilter(typeof(UserFilters))]
         public IActionResult Index() => View(_db.images.ToList());
-        public IActionResult EditCampaign()
+        [TypeFilter(typeof(UserFilters))]
+        public IActionResult EditShirt()
         {
             return RedirectToAction("Index", "Home");
         }
         [HttpPost]
-        public async Task<IActionResult> EditCampaign(TShitsViewModel model)
+        [TypeFilter(typeof(UserFilters))]
+        public async Task<IActionResult> EditShirt(TShitsViewModel model)
         {
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Home");

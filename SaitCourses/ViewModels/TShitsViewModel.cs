@@ -13,6 +13,7 @@ namespace SaitCourses.ViewModels
         public int id { get; set; } 
         [Required]
         public string TShirtName { get; set; }
+        public string userid { get; set; }
         public string image { get; set; }
         public string theme { get; set; }
         //public IEnumerable<Image> images { get; set; }

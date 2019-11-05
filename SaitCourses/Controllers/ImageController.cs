@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SaitCourses.ViewModels;
 using SaitCourses.Models;
 using Microsoft.AspNetCore.Identity;
+using SaitCourses.Filters;
 namespace SaitCourses.Controllers
 {
     public class ImageController : Controller
@@ -19,26 +20,17 @@ namespace SaitCourses.Controllers
             _db = db;
             _userManager = userManager;
         }
-
+        [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> CreateShirt()
         {
-            //    User user = await _userManager.GetUserAsync(User);
-              //  _db.shirts.Add(new TShirt
-              //  {
-              ////      user = user,
-              //      name = "Tshirt =)",
-              //      createDate = DateTime.Now.ToString("MM/dd/yyyy"),
-              //  });
+
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Users");
         }
-
+        [TypeFilter(typeof(UserFilters))]
         [HttpPost]
         public async Task<IActionResult> AddImage(TShitsViewModel model)
         {
-            //TShirt shirt = _db.shirts.FirstOrDefault(item => item.id == model.id);
-            //if(shirt != null)
-            //{
                 _db.images.Add(new Image {
                //     tShirt = shirt,
                     image = model.image
@@ -48,11 +40,9 @@ namespace SaitCourses.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+        [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> Constructor(TShitsViewModel model)
         {
-            //TShirt shirt = _db.shirts.FirstOrDefault(item => item.id == model.id);
-            //if(shirt != null)
-            //{
             var topics = _db.topics.FirstOrDefault(item => item.nameTopic == model.Topic);
             User user = await _userManager.GetUserAsync(User);
             string tag = model.Tag.Replace("  ", " ");
@@ -60,7 +50,6 @@ namespace SaitCourses.Controllers
           
             _db.tshirts.Add(new Shirt
             {
-                //     tShirt = shirt,
                 image = model.image,
                 name = model.TShirtName,
                 description = model.description,
@@ -68,7 +57,6 @@ namespace SaitCourses.Controllers
                 themeId = topics.id,
                 createDate = DateTime.Now.ToString("MM/dd/yyyy"),
                 Sex = model.sex
-                //users = user
             });; 
             //}
             await _db.SaveChangesAsync();
@@ -90,6 +78,7 @@ namespace SaitCourses.Controllers
             }
             return RedirectToAction("Constructor", "Users");
         }
+        [TypeFilter(typeof(UserFilters))]
         public IActionResult Index()
         {
             return View();

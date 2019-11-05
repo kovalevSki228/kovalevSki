@@ -39,7 +39,6 @@ namespace SaitCourses.Controllers
                 bool admin = false;
                 if (User.Identity == null) admin = true;
                 User user = new User { Email = model.Email, UserName = model.Name};
-                //add user
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -62,7 +61,6 @@ namespace SaitCourses.Controllers
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
-                
             }
             return View(model);
         }
@@ -75,12 +73,10 @@ namespace SaitCourses.Controllers
                 return View("Error");
             }
             var user = await _userManager.FindByIdAsync(userId);
-
             if(user == null)
             {
                 return View("Error");
             }
-
             var result = await _userManager.ConfirmEmailAsync(user, code);
             if (result.Succeeded)
                 return RedirectToAction("Index", "Home");
@@ -143,74 +139,8 @@ namespace SaitCourses.Controllers
                     ModelState.AddModelError("", "Incorrect login or password");
                 }
             }
-            return View(model);
-            //if(ModelState.IsValid)
-            //{
-            //    var user = await _userManager.FindByNameAsync(model.Name);
-            //    if (user != null)
-            //    {
-            //        if (!await _userManager.IsEmailConfirmedAsync(user))
-            //        {
-            //            IEnumerable<User> users = _db.Users.Select(item => item);
-
-            //            if (_db.Users.Count() == 1)
-            //            {
-            //                await _userManager.AddToRoleAsync(user, "Admin");
-            //                await _signInManager.SignInAsync(user, false);
-            //            }
-            //            else
-            //            {
-            //                await _userManager.AddToRoleAsync(user, "User");
-            //                await _signInManager.SignInAsync(user, false);
-            //            }
-            //            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            //            return RedirectToAction("index", "home");
-
-            //            ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
-            //           // return View(model);
-            //        }
-            //        else
-            //        {
-            //            ModelState.AddModelError("", "Не подтвержден email.");
-            //        }
-            //    }
-            //    else
-            //    {
-            //        ModelState.AddModelError("", "Неверный логин или пароль");
-            //    }
-
-            //    //var result =
-            //    //    await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
-            //    //if (result.Succeeded)
-            //    //{
-            //    //    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
-            //    //    {
-            //    //        return Redirect(model.ReturnUrl);
-            //    //    }
-            //    //    else
-            //    //    {
-            //    //        return RedirectToAction("Index", "Home");
-            //    //    }
-            //    //}
-            //    //else
-            //    //{
-            //    //    ModelState.AddModelError("", "Invalid client");
-            //    //}
-            //}
-            //return View(model);
+            return View(model); 
         }
-
-        public async Task<IActionResult> SwitchColor()
-        {
-            User user = await _userManager.GetUserAsync(User);
-            if (await _userManager.IsInRoleAsync(user, "Theme"))
-                await _userManager.RemoveFromRoleAsync(user, "Theme");
-            else await _userManager.AddToRoleAsync(user, "Theme");
-            await _signInManager.SignOutAsync();
-            await _signInManager.SignInAsync(user, false);
-            return RedirectToAction("Setting", "Users");
-        }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

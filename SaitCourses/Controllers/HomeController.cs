@@ -15,6 +15,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
 using SaitCourses.ViewModels;
 
+
 namespace SaitCourses.Controllers
 {
    
@@ -32,7 +33,7 @@ namespace SaitCourses.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string tag, SortShirt sortShirt = SortShirt.NameAsc)
+        public async  Task<IActionResult> Index(string tag, string theme)
         {
             var tags = _db.tags.FirstOrDefault(item => item.name == tag);
 
@@ -40,6 +41,7 @@ namespace SaitCourses.Controllers
 
             Shirt[] _shirt = new Shirt[shirtid.Count];
             int i = 0;
+
             foreach (var shId in shirtid)
             {
                 _shirt[i] = _db.tshirts.FirstOrDefault(item => item.id == shId.shirtid);
@@ -53,12 +55,17 @@ namespace SaitCourses.Controllers
                 topic = _db.topics.ToList()
             });
         }
-        public IActionResult Index()
+ 
+        public IActionResult Index(string search)
         {
-
+            var shirtSearch = _db.tshirts.Select(item => item);
+            if (!String.IsNullOrEmpty(search))
+            {
+                shirtSearch = shirtSearch.Where(item => item.description.Contains(search));
+            }
             return View(new HomeViewModel
             {
-                shirt = _db.tshirts.ToList(),
+                shirt = shirtSearch.ToList(),
                 tag = _db.tags.ToList(),
                 topic = _db.topics.ToList()
             });

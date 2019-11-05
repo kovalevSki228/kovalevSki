@@ -18,9 +18,8 @@
           crossorigin="anonymous"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <script>
-    </script>
-    @{
+    <script src="~/js/theme.js"></script>
+    @*@{
         if (User.IsInRole("Theme"))
         {
             
@@ -31,7 +30,7 @@
         {
             <link rel="stylesheet" href="~/css/bright.css" />
         }
-    }
+    }*@
 
 </head>
 <body class="dark_2 pb-5">
@@ -52,16 +51,16 @@
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Account" asp-action="SwitchColor">@Localizer["SwitchColor"]</a>
+                            <a class="nav-link text-white" onclick="Theme()" @*asp-controller="Account" asp-action="SwitchColor"*@>@Localizer["SwitchColor"]</a>
                         </li>
                     </ul>
 
                 </div>
                 <div>
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline my-2 my-sm-0" type="submit">@Localizer["Search"]</button>
-                    </form>
+                    <form class="form-inline my-2 my-lg-0" asp-area="" asp-controller="Home" asp-action="Index">
+                               <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="search">
+                               <button class="btn btn-outline my-2 my-sm-0" type="submit">@Localizer["Search"]</button>                   
+                        </form>
                 </div>
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
