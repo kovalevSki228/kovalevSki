@@ -55,15 +55,17 @@ namespace SaitCourses.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [TypeFilter(typeof(UserFilters))]
-        public IActionResult ShirtEdit(int id)
+        //[TypeFilter(typeof(UserFilters))]
+        public async Task<IActionResult> ShirtEdit(int id, string returnUrl)
         {
             
             string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
-            Shirt shirt = _db.tshirts.FirstOrDefault(item => item.id == id);
+            Shirt shirt =  await _db.tshirts.FindAsync(id);
             return View(new TShitsViewModel
             {
+                returnUrl = returnUrl,
                 id = shirt.id,
+                image = shirt.image,
                 TShirtName = shirt.name,
                 description = shirt.description,
                 Topics = topics,
@@ -73,23 +75,22 @@ namespace SaitCourses.Controllers
 
         [HttpPost]
         [TypeFilter(typeof(UserFilters))]
-        public async Task<IActionResult> Edit(TShitsViewModel model)
+        public async Task<IActionResult> Edit(TShitsViewModel model, string returnUrl)
         {
             var topics = _db.topics.FirstOrDefault(item => item.nameTopic == model.Topic);
             User user = await _userManager.GetUserAsync(User);
             string tag = model.Tag.Replace("  ", " ");
             string[] tags = tag.Split(' ');
-            
-            var result = new Shirt
-            {
-                image = _db.tshirts.FirstOrDefault(item => item.id == model.id).image,
-                name = model.TShirtName,
-                description = model.description,
-                userId = user.Id,
-                themeId = topics.id,
-                createDate = DateTime.Now.ToString("MM/dd/yyyy"),
-                Sex = model.sex
-            };
+
+            var result = _db.tshirts.FirstOrDefault(item => item.id == model.id);
+
+            result.image = _db.tshirts.FirstOrDefault(item => item.id == model.id).image;
+            result.name = model.TShirtName;
+            result.description = model.description;
+            result.userId = user.Id;
+            result.themeId = topics.id;
+            result.createDate = DateTime.Now.ToString("MM/dd/yyyy");
+            result.Sex = model.sex;
              _db.tshirts.Update(result);
             //}
             await _db.SaveChangesAsync();
@@ -109,7 +110,7 @@ namespace SaitCourses.Controllers
                 });
                 await _db.SaveChangesAsync();
             }
-            return View();
+            return Redirect(returnUrl);
         }
 
         public async Task<IActionResult> basket()

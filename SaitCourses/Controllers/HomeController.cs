@@ -32,36 +32,34 @@ namespace SaitCourses.Controllers
             _db = db;
         }
 
-        [HttpPost]
-        public async  Task<IActionResult> Index(string tag, string theme)
+        public IActionResult Index(string search, string tag)
         {
-            var tags = _db.tags.FirstOrDefault(item => item.name == tag);
-
-            var shirtid = _db.tagInTShirts.Where(item => item.tagid == tags.id).ToList();
-
-            Shirt[] _shirt = new Shirt[shirtid.Count];
-            int i = 0;
-
-            foreach (var shId in shirtid)
+            if (!String.IsNullOrEmpty(tag))
             {
-                _shirt[i] = _db.tshirts.FirstOrDefault(item => item.id == shId.shirtid);
-                i++;
+                var tags = _db.tags.FirstOrDefault(item => item.name == tag);
+
+                var shirtid = _db.tagInTShirts.Where(item => item.tagid == tags.id).ToList();
+
+                Shirt[] _shirt = new Shirt[shirtid.Count];
+                int i = 0;
+
+                foreach (var shId in shirtid)
+                {
+                    _shirt[i] = _db.tshirts.FirstOrDefault(item => item.id == shId.shirtid);
+                    i++;
+                }
+                _shirt = _shirt.OrderBy(item => item.name).ToArray();
+                return View(new HomeViewModel
+                {
+                    shirt = _shirt.ToList(),
+                    tag = _db.tags.ToList(),
+                    topic = _db.topics.ToList()
+                });
             }
-            _shirt = _shirt.OrderBy(item => item.name).ToArray();
-            return View(new HomeViewModel
-            {
-                shirt = _shirt.ToList(),
-                tag = _db.tags.ToList(),
-                topic = _db.topics.ToList()
-            });
-        }
- 
-        public IActionResult Index(string search)
-        {
             var shirtSearch = _db.tshirts.Select(item => item);
             if (!String.IsNullOrEmpty(search))
             {
-                shirtSearch = shirtSearch.Where(item => item.description.Contains(search));
+                shirtSearch = shirtSearch.Where(item => item.description.Contains(search) || item.name.Contains(search));
             }
             return View(new HomeViewModel
             {
@@ -70,6 +68,9 @@ namespace SaitCourses.Controllers
                 topic = _db.topics.ToList()
             });
         }
+
+ 
+
 
         public IActionResult Privacy()
         {

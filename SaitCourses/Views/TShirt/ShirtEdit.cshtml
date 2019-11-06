@@ -18,11 +18,11 @@
     <div class="container marginT50 dropzone">
         <div class="row">
             <div class="col-sm">
-                <canvas id="canvas" width="500px" height="500px"></canvas>
+                <canvas id="canvas" width="500px" height="500px" src="@Model.image.Replace(".svg",".png")"></canvas>
             </div>
             <div class="col-sm">
                 <div class="container">
-                    <form class="my-form" method="post" asp-controller="TShirt" asp-action="Edit" asp-route-id="@Model.id">
+                    <form class="my-form" method="post" asp-controller="TShirt" asp-action="Edit" asp-route-id="@Model.id" asp-route-returnUrl="@Model.returnUrl">
                         <h2 id="Tname">T-Shirts name:</h2>
                         <input asp-for="TShirtName" type="text">
                         <p>Description:</p>

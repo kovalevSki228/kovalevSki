@@ -104,9 +104,9 @@ else
     {
         <div class="card shadow-lg" style="margin-left:10px; margin-top:10px; width: 16rem;" width="250">
             <embed src="@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="250" />
-            <div class="card-body ellipsis">
-                <h4 class="card-text">@img.name</h4>
-                <p class="card-text">@img.description</p>
+            <div class="card-body">
+                <h4 class="card-text ellipsis">@img.name</h4>
+                <p class="card-text ellipsis">@img.description</p>
                 <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
                     <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
                 </form>

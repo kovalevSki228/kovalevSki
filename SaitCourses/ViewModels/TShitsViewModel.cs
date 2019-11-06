@@ -19,6 +19,7 @@ namespace SaitCourses.ViewModels
         //public IEnumerable<Image> images { get; set; }
         public string description { get; set; }
         public string data { get; set; }
+        public string returnUrl { get; set; }
         public double rating { get; set; }
         public string sex { get; set; }
         public string size { get; set; }
