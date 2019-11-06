@@ -76,7 +76,7 @@ namespace SaitCourses.Controllers
                 });
                 await _db.SaveChangesAsync();
             }
-            return RedirectToAction("Constructor", "Users");
+            return RedirectToAction("Constructor", "TShirt");
         }
         [TypeFilter(typeof(UserFilters))]
         public IActionResult Index()

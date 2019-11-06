@@ -17,6 +17,7 @@
 
 .card {
     background-color: #040404 !important;
+    color: antiquewhite !important;
 }
 
 html {
@@ -26,9 +27,12 @@ html {
 .text-muted {
     color: aliceblue !important;
 }
-
+.input-group {
+    background-color: #121212 !important;
+    color: white !important;
+}
 .btn {
-    background-color: #dimgrey !important;
+    background-color: #464646 !important;
     color: white !important;
     border-color: black !important;
 }

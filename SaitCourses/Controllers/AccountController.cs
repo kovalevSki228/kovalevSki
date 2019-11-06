@@ -8,6 +8,7 @@ using SaitCourses.ViewModels;
 using SaitCourses.Models;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace SaitCourses.Controllers
 {
@@ -17,12 +18,14 @@ namespace SaitCourses.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationContext _db;
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, ApplicationContext db)
+        private readonly IConfiguration Configuration;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, ApplicationContext db, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _db = db;
+            Configuration = configuration;
         }
 
         [HttpGet]
@@ -47,7 +50,7 @@ namespace SaitCourses.Controllers
                         "account",
                         new { userid = user.Id, code = code },
                         protocol: HttpContext.Request.Scheme);
-                    EmailService emailservice = new EmailService();
+                    EmailService emailservice = new EmailService(Configuration);
                     await emailservice.SendEmailAsync(model.Email, "confirm your account",
                         $"to confirm registration, follow the link: <a href='{callbackurl}'>link</a>");
 

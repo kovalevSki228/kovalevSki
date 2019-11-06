@@ -9,19 +9,21 @@ using Microsoft.AspNetCore.Identity;
 using SaitCourses;
 using SaitCourses.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace SaitCourses.Controllers
 {
     public class TShirtController : Controller
     {
         private readonly ApplicationContext _db;
+        private readonly IConfiguration Configuration;
 
-        
         private readonly UserManager<User> _userManager;
-        public TShirtController(ApplicationContext db, UserManager<User> userManager)
+        public TShirtController(ApplicationContext db, UserManager<User> userManager, IConfiguration configuration)
         {
             _db = db;
             _userManager = userManager;
+            Configuration = configuration;
         }
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> Delete(int id)
@@ -55,22 +57,34 @@ namespace SaitCourses.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //[TypeFilter(typeof(UserFilters))]
-        public async Task<IActionResult> ShirtEdit(int id, string returnUrl)
+        [TypeFilter(typeof(UserFilters))]
+        public async Task<IActionResult> Constructor(int id, string returnUrl)
         {
-            
             string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
-            Shirt shirt =  await _db.tshirts.FindAsync(id);
-            return View(new TShitsViewModel
+
+            if (String.IsNullOrEmpty(returnUrl))
             {
-                returnUrl = returnUrl,
-                id = shirt.id,
-                image = shirt.image,
-                TShirtName = shirt.name,
-                description = shirt.description,
-                Topics = topics,
-                Tegs = _db.tags.Select(item => item.name).ToArray()
-            });
+                return View(new TShitsViewModel
+                {
+                    Topics = topics,
+                    Tegs = _db.tags.Select(item => item.name).ToArray(),
+                    tag = _db.tags.ToArray()
+                });
+            }
+            else
+            {
+                Shirt shirt = await _db.tshirts.FindAsync(id);
+                return View(new TShitsViewModel
+                {
+                    returnUrl = returnUrl,
+                    id = shirt.id,
+                    image = shirt.image,
+                    TShirtName = shirt.name,
+                    description = shirt.description,
+                    Topics = topics,
+                    Tegs = _db.tags.Select(item => item.name).ToArray()
+                });
+            }
         }
 
         [HttpPost]
@@ -165,7 +179,7 @@ namespace SaitCourses.Controllers
                 _db.baskets.Update(status);
                 await _db.SaveChangesAsync();
             }            
-            EmailService emailservice = new EmailService();
+            EmailService emailservice = new EmailService(Configuration);
 
             await emailservice.SendEmailAsync(user.Email, "Purchase",
                 "you bought t-shirts: "+message);

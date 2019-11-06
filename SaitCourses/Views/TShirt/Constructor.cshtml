@@ -1,0 +1,187 @@
+@model SaitCourses.ViewModels.TShitsViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <title>lego</title>
+    <link href="https://fonts.googleapis.com/css?family=Almarai:700,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css.css" type="text/css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" src="js.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.4.0/fabric.min.js"></script>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+</head>
+<body>
+    <div class="container marginT50 dropzone">
+        <div class="row">
+            <div class="col-sm">
+                <canvas id="canvas" width="500px" height="500px"></canvas>
+                <div id="containerTag" style="display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px;"></div>
+            </div>
+            <div class="col-sm">
+                <div>
+                    @if (Model.returnUrl == null)
+                    {
+                    <form class="my-form" method="post" asp-controller="Image" asp-action="Constructor">
+                        <h2 id="Tname">T-Shirts name:</h2>
+                        <input class="form-control" asp-for="TShirtName" placeholder="Name" type="text">
+                        <p>Description:</p>
+                        <textarea class="form-control" asp-for="description" type="text"></textarea>
+                        <p>Topic:</p>
+                        <input id="imageLink" asp-for="image" hidden />
+                        <select class="form-control field-input mb-2" asp-for="Topic">
+                            <option class="form-control" value="@Model.Topics[0]">@Model.Topics[0]</option>
+                            @for (int i = 1; i < Model.Topics.Length; i++)
+                            {
+                                <option class="form-control" value="@Model.Topics[i]">@Model.Topics[i]</option>
+                            }
+                        </select>
+                        <button type="submit" id="imageLink2" hidden></button>
+                        <p>Tags:</p>
+                        <input class="form-control" asp-for="Tag" id="inputTag" onchange="tag()" />
+
+                        <hr id="line">
+                    </form>
+                    }
+                    else
+                    {
+                <form class="my-form" method="post" asp-controller="TShirt" asp-action="Edit" asp-route-id="@Model.id" asp-route-returnUrl="@Model.returnUrl">
+                    <h2 id="Tname">T-Shirts name:</h2>
+                    <input class="form-control" asp-for="TShirtName" placeholder="Name" value="@Model.TShirtName" type="text">
+                    <p>Description:</p>
+                    <textarea class="form-control" asp-for="description" type="text"></textarea>
+                    <p>Topic:</p>
+                    <input id="imageLink" asp-for="image" hidden />
+                    <select class="form-control field-input mb-2" asp-for="Topic">
+                        <option class="form-control" value="@Model.Topics[0]">@Model.Topics[0]</option>
+                        @for (int i = 1; i < Model.Topics.Length; i++)
+                        {
+                            <option class="form-control" value="@Model.Topics[i]">@Model.Topics[i]</option>
+                        }
+                    </select>
+                    <button type="submit" id="imageLink2" hidden></button>
+                    <p>Tags:</p>
+                    <input class="form-control" asp-for="Tag" id="inputTag" onchange="tag()" />
+
+                    <hr id="line">
+                </form>
+                              }
+                    </div>
+                <div class="container">
+                    <!-- ---------------------------------------------------------------------------------- -->
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-secondary active">
+                            <input type="radio" name="r" value="l" onchange="check()">Man
+                            <!--<input type="radio" name="sex" id="option1" autocomplete="off" checked onclick="check()">-->
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="r" value="2" onchange="check()">Women
+                            <!--<input type="radio" name="sex" id="option2" autocomplete="off" onclick="check()">-->
+                        </label>
+                    </div>
+                    <p></p>
+                    <!-------------------------------------------------------------------------------------  -->
+                    <!-- ---------------------------------------------------------------------------------- -->
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-secondary active">
+                            <input type="radio" name="filter" value="blackAndWhite" onchange="changeImageFilter('blackAndWhite')">Black & White
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="filter" value="sepia" onchange="changeImageFilter('sepia')">Sepia
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="filter" value="pixelate" onchange="changeImageFilter('pixelate')">Pixelate
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="filter" value="none" onchange="changeImageFilter('none')">NONE
+                        </label>
+                    </div>
+
+
+                    <!-------------------------------------------------------------------------------------  -->
+                    <div class="container col">
+
+                        <div class=".col-3 q">
+                            <p class="">Color text:   <input type="color" class="form-control" style="display:grid" id="favcolor"></p>
+                        </div>
+                        <div class=".col-3 q">
+                            <p class="">T-color: <input type="color" class="form-control" id="tcolor"></p>
+                        </div>
+                        @*<div class=".col-3 q ">
+                    <label class="custom-file-upload">
+                        <input type="file" id="file" />
+                        <i class="fa fa-cloud-upload"></i>Upload File
+                    </label>
+                </div>*@
+                        <div class="row">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon01"></span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="file">
+                                    <label class="fa fa-cloud-upload custom-file-label form-control">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class=".col-3 q">
+                                <button class="	btn btn-danger" onclick="f()">Delete selected object</button>
+                            </div>
+                            <div class=".col-3 q">
+                                <button class="btn" onclick="text()">Add text</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=".col-3 q">
+                        <button class="btn" onclick="save()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <hr id="line">
+    </div>
+    <div class="progress-bar" id="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+
+
+</body>
+</html>
+
+
+
+<script>
+    autocomplete(document.getElementById("myInput"), @Model.);
+</script> 
+<script>
+    function tag() {
+        let containerTag = document.getElementById("containerTag");
+        containerTag.innerHTML = "";
+        let text = document.getElementById("inputTag").value;
+        text = text.replace('  ', ' ');
+        if (text != "") {
+            let word = text.split(' ');
+
+            for (i = 0; i < word.length; i++) {
+                if (word[i].Trim !== '') {
+                    let div = document.createElement("div");
+                    div.innerHTML = "<div class=\"styleTag\" style=\"padding: 2px; border: 2px solid black; border-radius: 10px; margin-right: 10px; margin-bottom: 5px;\">" + word[i] + "</div>";
+                    containerTag.appendChild(div);
+                }
+            }
+        }
+    }
+</script>
+<script type="text/javascript" scr="~/js/autocomplete.js"></script>
+<script type="text/javascript" src="~/js/Constructor.js"></script>
+
+

@@ -90,11 +90,11 @@ else
     }
 </style>
 <h3 class="text-left">Tags:</h3>
-<div style=" display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px; border: 2px solid black; border-radius: 10px;" class="styleTag">
+<div style=" display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px; border: 1px solid black; border-radius: 10px;" class="styleTag">
     @foreach (var tag in Model.tag)
     {
         <form asp-controller="Home" asp-action="Index" asp-route-tag="@tag.name" method="post">
-            <button type="submit" style="margin-left:5px;" class="btn btn-primary" asp-for="@tag.name">@tag.name</button>
+            <button type="submit" style="margin-left:5px; margin-bottom:3px;" class="btn btn-primary" asp-for="@tag.name">@tag.name</button>
         </form>
     }
 </div>

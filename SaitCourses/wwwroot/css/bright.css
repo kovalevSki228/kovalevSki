@@ -9,7 +9,10 @@
     color: black !important;
     border-color: black !important;
 }
-
+.styleTag {
+    border-color: black !important;
+    background-color: #4e4e4e !important;
+}
 html {
     background-color: white !important;
 }
@@ -19,27 +22,32 @@ html {
 }
 
 .btn {
-    background-color: #d93585 !important;
-    color: black !important;
-    border-color: black !important;
+    background-color: #3f0b41 !important;
+    color: white !important;
+    border-color: white !important;
 }
+
+
 
 .card {
-    background-color: #d93585 !important;
+    background-color: #3f0b41 !important;
     color: white !important;
 }
-
+.input-group {
+    background-color: white !important;
+    color: black !important;
+}
 .form-control {
     background-color: white !important;
-    color: black;
+    color: black !important;
 }
 
 .border {
-    border-color: black !important;
+    border-color: #816182 !important;
 }
 
 .navbar {
-    background-color: #d93585 !important;
+    background-color: #3f0b41 !important;
     color: white
 }
 

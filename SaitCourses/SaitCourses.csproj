@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <Folder Include="Resources\ViewModels\" />
-    <Folder Include="Theme\" />
   </ItemGroup>
 
 

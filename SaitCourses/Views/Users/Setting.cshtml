@@ -84,7 +84,7 @@
 </form>
     @*@Html.Partial("Edit")*@
 </div>
-<a class="dropdown-item" asp-controller="Users" asp-action="Constructor" asp-area="">@Localizer["Setting"]</a>
+<a class="dropdown-item" asp-controller="TShirt" asp-action="Constructor" asp-area="">@Localizer["Setting"]</a>
 <div class="row align-items-baseline container pb-3 pr-sm-4 ">
     @foreach (var img in Model.shirts)
     {
@@ -93,13 +93,13 @@
             <div class="card left shadow-lg" style="margin-left:10px; width: 11rem;" width="100 col-sm-3 pb-3 pr-sm-4" >
                 <embed src="@img.image.Replace(".svg", ".png")" class="card-img-top" alt="..." height="150" />
                 <div class="card-body ellipsis">
-                    <h6 class="card-text">@img.name</h6>
-                    <p class="card-text">@img.description</p>
+                    <h6 class="card-text ellipsis">@img.name</h6>
+                    <p class="card-text ellipsis">@img.description</p>
                     <div class="row ">
                         <form asp-controller="TShirt" asp-action="Delete" asp-route-id="@img.id" method="post">
                             <button type="submit" class="btn btn-sm btn-danger"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572397986/oqlhs3sjy8orthqrhtth.png"></button>
                         </form>
-                        <form asp-controller="TShirt" asp-action="ShirtEdit" asp-route-id="@img.id" asp-route-returnUrl="@Context.Request.Path">
+                        <form asp-controller="TShirt" asp-action="Constructor" asp-route-id="@img.id" asp-route-returnUrl="@Context.Request.Path">
                             <button type="submit" class="btn btn-sm float-right btn-primary">Edit</button>
                         </form>
                         <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">

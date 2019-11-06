@@ -4,12 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using MimeKit;
 using MailKit.Net.Smtp;
-
+using Microsoft.Extensions.Configuration;
 
 namespace SaitCourses
 {
     public class EmailService
     {
+        private readonly IConfiguration _config;
+
+        public EmailService(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public async Task SendEmailAsync(string email, string subject, string message)
         {
             var emailMessage = new MimeMessage();
@@ -25,7 +32,7 @@ namespace SaitCourses
             using (var client = new SmtpClient())
             {
                 await client.ConnectAsync("smtp.mail.ru", 587, false);
-                await client.AuthenticateAsync("i_covalski@mail.ru", "8244779ilya");
+                await client.AuthenticateAsync(_config.GetValue<string>("AdminEmail:Login"), _config.GetValue<string>("AdminEmail:Password"));
                 await client.SendAsync(emailMessage);
 
                 await client.DisconnectAsync(true);

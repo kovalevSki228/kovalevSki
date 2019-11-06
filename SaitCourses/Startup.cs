@@ -32,19 +32,6 @@ namespace SaitCourses
             Configuration = configuration;
         }
 
-        //public static async Task InitializeAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
-        //{
-        //    if (await roleManager.FindByNameAsync("Admin") == null)
-        //    {
-        //        await roleManager.CreateAsync(new IdentityRole("Admin"));
-        //    }
-        //    if (await roleManager.FindByNameAsync("User") == null)
-        //    {
-        //        await roleManager.CreateAsync(new IdentityRole("User"));
-        //    }
-        //}
-
-
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)

@@ -28,6 +28,7 @@ namespace SaitCourses.ViewModels
         public string[] Topics { get; set; }
         public string Tag { get; set; }
         public string[] Tegs { get; set; }
+        public Tag[] tag { get; set; }
         public CommentsView[] comments { get; set; }
     }
     public class CommentsView

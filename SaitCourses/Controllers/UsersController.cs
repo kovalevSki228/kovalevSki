@@ -82,10 +82,9 @@ namespace SaitCourses.Controllers
             string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
 
             return View(new TShitsViewModel { 
-                TShirtName = "name",
-                description = "description",
                 Topics = topics,
-                Tegs = _db.tags.Select(item => item.name).ToArray()
+                Tegs = _db.tags.Select(item => item.name).ToArray(),
+                tag = _db.tags.ToArray()
             });
         }
 
