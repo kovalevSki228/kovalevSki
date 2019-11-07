@@ -11,13 +11,16 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script type="text/javascript" src="js.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.4.0/fabric.min.js"></script>
+    <script src="~/js/download.js"></script>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
 </head>
+
 <body>
     <div class="container marginT50">
         <div class="row">
             <div class="col-sm">
                 <img src="@Model.image.Replace(".svg", ".png")">
+                <a class="myclick" href="@Model.image.Replace(".svg", ".pdf").Replace("upload/","upload/fl_attachment/")" download>Download</a>
             </div>
             <div class="col-sm">
                 <div class="container">
@@ -64,11 +67,8 @@
                             <option value="S">S</option>
                             <option value="XS">XS</option>
                         </select>
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <button id="add" class="btn">Bay</button>
 
-                        }
+                            <button id="add" class="btn">Bay</button>
                     </form>
                 </div>
             </div>

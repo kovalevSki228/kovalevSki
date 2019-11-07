@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SaitCourses.Models;
 
 namespace SaitCourses.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20191107160036_qwer")]
+    partial class qwer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,6 +192,8 @@ namespace SaitCourses.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("shirtid");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("baskets");
                 });
@@ -471,6 +475,10 @@ namespace SaitCourses.Migrations
                         .WithMany()
                         .HasForeignKey("shirtid")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SaitCourses.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("userId");
                 });
 
             modelBuilder.Entity("SaitCourses.Models.Comment", b =>

@@ -39,8 +39,7 @@ namespace SaitCourses.Controllers
         {
             if(ModelState.IsValid)
             {
-                bool admin = false;
-                if (User.Identity == null) admin = true;
+                
                 User user = new User { Email = model.Email, UserName = model.Name};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -54,7 +53,7 @@ namespace SaitCourses.Controllers
                     await emailservice.SendEmailAsync(model.Email, "confirm your account",
                         $"to confirm registration, follow the link: <a href='{callbackurl}'>link</a>");
 
-                    return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+                    return View("RegisterConfirm","Account");
                     
                 }
                 else

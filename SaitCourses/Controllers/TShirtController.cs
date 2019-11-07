@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using SaitCourses.Models;
 using SaitCourses.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using System.Web;
 using SaitCourses;
 using SaitCourses.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 
 namespace SaitCourses.Controllers
 {
@@ -19,6 +21,12 @@ namespace SaitCourses.Controllers
         private readonly IConfiguration Configuration;
 
         private readonly UserManager<User> _userManager;
+        private string clientIP()
+        {
+            IPHostEntry heserver = Dns.GetHostEntry(Dns.GetHostName());
+            string ip = heserver.AddressList[1].ToString();
+            return ip;
+        }
         public TShirtController(ApplicationContext db, UserManager<User> userManager, IConfiguration configuration)
         {
             _db = db;
@@ -127,7 +135,7 @@ namespace SaitCourses.Controllers
             return Redirect(returnUrl);
         }
 
-        public async Task<IActionResult> basket()
+        public async Task<IActionResult> Stores()
         {
             User user = await _userManager.GetUserAsync(User);
             var _basket = _db.baskets.Where(item => item.userId == user.Id).ToList();
@@ -135,56 +143,136 @@ namespace SaitCourses.Controllers
             {
                 userId = user.Id,
                 basket = _basket.ToList()
-            });
+            }) ;
+        }
+        [HttpGet]
+        public async Task<IActionResult> basket()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                User user = await _userManager.GetUserAsync(User);
+                var _basket = _db.baskets.Where(item => item.userId == user.Id).ToList();
+                return View(new BasketViewModel
+                {
+                    userId = user.Id,
+                    basket = _basket.ToList()
+                });
+            }
+            else
+            {
+                var _basket = _db.baskets.Where(item => item.userId == clientIP()).ToList();
+                return View(new BasketViewModel
+                {
+                    userId = clientIP(),
+                    basket = _basket.ToList()
+                });
+            }
         }
 
         
         [HttpPost]
         public async Task<IActionResult> basket(int id, BasketViewModel model)
         {
-            
-            User user = await _userManager.GetUserAsync(User);
-            var result = _db.tshirts.FirstOrDefault(item => item.id == id);
-            _db.baskets.Add(new Basket
+            if (User.Identity.IsAuthenticated)
             {
-                dataOfPurchase = DateTime.Now.ToString("MM/dd/yyyy"),
-                nameShirt = result.name,
-                amount = 1,
-                shirtid = result.id,
-                userId = user.Id,
-                purchaseStatus = false,
-                sex = model.sex,
-                size = model.size
+                User user = await _userManager.GetUserAsync(User);
+                var result = _db.tshirts.FirstOrDefault(item => item.id == id);
+                _db.baskets.Add(new Basket
+                {
+                    dataOfPurchase = DateTime.Now.ToString("MM/dd/yyyy"),
+                    nameShirt = result.name,
+                    amount = 1,
+                    shirtid = result.id,
+                    userId = user.Id,
+                    purchaseStatus = false,
+                    sex = model.sex,
+                    size = model.size
 
-            });
-            await _db.SaveChangesAsync();
-            var _basket = _db.baskets.Where(item => item.userId == user.Id).ToList();
-            return View(new BasketViewModel { 
-                userId = user.Id,
-                basket = _basket.ToList()
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Bay(int id)
-        {
-            User user = await _userManager.GetUserAsync(User);
-            //var result = _db.tshirts.FirstOrDefault(item => item.id == id);
-            var result = _db.baskets.Where(item => item.userId == user.Id && item.purchaseStatus == false).ToList();
-            string message = "";
-            foreach(var status in result)
-            {
-                status.purchaseStatus = true;
-                message += "\n" + status.nameShirt.ToString() + ", price 15 $";
-                _db.baskets.Update(status);
+                });
                 await _db.SaveChangesAsync();
-            }            
-            EmailService emailservice = new EmailService(Configuration);
+                var _basket = _db.baskets.Where(item => item.userId == user.Id).ToList();
+                return View(new BasketViewModel
+                {
+                    userId = user.Id,
+                    basket = _basket.ToList()
+                });
+            }
+            else
+            {
+                var result = _db.tshirts.FirstOrDefault(item => item.id == id);
+                _db.baskets.Add(new Basket
+                {
+                    dataOfPurchase = DateTime.Now.ToString("MM/dd/yyyy"),
+                    nameShirt = result.name,
+                    amount = 1,
+                    shirtid = result.id,
+                    userId = clientIP(),
+                    purchaseStatus = false,
+                    sex = model.sex,
+                    size = model.size
 
-            await emailservice.SendEmailAsync(user.Email, "Purchase",
-                "you bought t-shirts: "+message);
-            return View("Bay");
+                });
+                await _db.SaveChangesAsync();
+                var _basket = _db.baskets.Where(item => item.userId == clientIP()).ToList();
+                return View(new BasketViewModel
+                {
+                    userId = clientIP(),
+                    basket = _basket.ToList()
+                });
+            }
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> Bay(BasketViewModel model)
+        {
+
+            if (User.Identity.IsAuthenticated)
+            {
+                User user = await _userManager.GetUserAsync(User);
+                var result = _db.baskets.Where(item => item.userId == user.Id && item.purchaseStatus == false).ToList();
+                string message = "";
+                foreach (var status in result)
+                {
+                    status.purchaseStatus = true;
+                    message += "\n" + status.nameShirt.ToString() + ", price 30 $";
+                    _db.baskets.Update(status);
+                    await _db.SaveChangesAsync();
+                }
+                EmailService emailservice = new EmailService(Configuration);
+
+                await emailservice.SendEmailAsync(user.Email, "Purchase",
+                    "you bought t-shirts: " + message);
+                return View("Bay");
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = _db.baskets.Where(item => item.userId == clientIP() && item.purchaseStatus == false).ToList();
+                    string message = "";
+                    foreach (var status in result)
+                    {
+                        status.purchaseStatus = true;
+                        message += "\n" + status.nameShirt.ToString() + ", price 30 $";
+                        _db.baskets.Update(status);
+                        await _db.SaveChangesAsync();
+                    }
+                    EmailService emailservice = new EmailService(Configuration);
+
+                    await emailservice.SendEmailAsync(model.Email, "Purchase",
+                        "you bought t-shirts: " + message);
+                    return View("Bay");
+                }
+                var _basket = _db.baskets.Where(item => item.userId == clientIP()).ToList();
+                return View("Basket", new BasketViewModel
+                {
+                    userId = clientIP(),
+                    basket = _basket.ToList()                    
+                });
+            }
+            
+        }
+
         [TypeFilter(typeof(UserFilters))]
         public IActionResult Index() => View(_db.images.ToList());
         [TypeFilter(typeof(UserFilters))]

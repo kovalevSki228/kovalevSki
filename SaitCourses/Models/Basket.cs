@@ -11,7 +11,6 @@ namespace SaitCourses.Models
         public string nameShirt { get; set; }
         public string dataOfPurchase { get; set; }
         public string userId { get; set; }
-        public User user { get; set; }
         public int shirtid { get; set; }
         public Shirt shirt { get; set; }
         public bool purchaseStatus { get; set; }

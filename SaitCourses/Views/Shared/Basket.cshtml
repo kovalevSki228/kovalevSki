@@ -1,26 +1,47 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-    <table class="table">
-        <tr><th>T-shirt name</th><th>Amount</th><th>Sex</th><th>Size</th><th>Order date</th></tr>
-        @foreach (var Shirt in Model.basket)
+﻿@model SaitCourses.ViewModels.BasketViewModel
+
+
+<table class="table">
+    <tr><th>T-shirt name</th><th>Amount</th><th>Sex</th><th>Size</th><th>Order date</th></tr>
+    @foreach (var Shirt in Model.basket)
+    {
+        if (Shirt.userId == Model.userId && Shirt.purchaseStatus == false)
         {
-            if (Shirt.userId == Model.userId && Shirt.purchaseStatus == false)
-            {
 
-                <tr>
-                    <td>@Shirt.nameShirt</td>
-                    <td>@Shirt.amount</td>
-                    <td>@Shirt.sex</td>
-                    <td>@Shirt.size</td>
-                    <td>@Shirt.dataOfPurchase</td>
-                </tr>
+            <tr>
+                <td>@Shirt.nameShirt</td>
+                <td>@Shirt.amount</td>
+                <td>@Shirt.sex</td>
+                <td>@Shirt.size</td>
+                <td>@Shirt.dataOfPurchase</td>
+            </tr>
 
-            }
         }
-    </table>
-<form asp-controller="TShirt" asp-action="Bay" asp-route-id="Model.userId" method="post">
-    <button type="submit" class="btn">Bay</button>
-</form>
+    }
+</table>
+@if (User.Identity.IsAuthenticated)
+{
+    <form asp-controller="TShirt" asp-action="Bay" method="post">
+        <button type="submit" class="btn">Bay</button>
+    </form>
+    <form asp-controller="TShirt" asp-action="Stores">
+        <button type="submit" class="btn">Stores</button>
+    </form>
+}
+else
+{
+    <form asp-controller="TShirt" asp-action="Bay" method="post">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <label asp-for="Email"></label><br />
+            <input class="form-control" asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Name"></label><br />
+            <input class="form-control" asp-for="Name" />
+            <span asp-validation-for="Name"></span>
+        </div>
+        <button type="submit" class="btn">Bay</button>
+    </form>
+}

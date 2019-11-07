@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using SaitCourses.Models;
@@ -19,5 +20,16 @@ namespace SaitCourses.ViewModels
         public int shirtid { get; set; }
         public Shirt shirt { get; set; }
         public int amount { get; set; }
+        public string returnUrl { get; set; }
+
+        [Required]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        public NoAutorizeBay noAutorize { get; set; }
     }
 }
