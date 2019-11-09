@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-
+@model SaitCourses.ViewModels.HomeViewModel
 
 
 <style>
@@ -66,15 +66,40 @@ else
 {
     <h1 class="display-4 text-center">@Localizer["Welcome"]</h1>
 }
-
-
-<select class="form-control field-input mb-5 col-md-6"> 
-    <option value="All">All</option>
-    @foreach (var topic in Model.topic)
+<h2 class="text-left">Top-5 T-Shirts:</h2>
+<div class="row align-items-baseline container pb-3 pr-sm-4">
+    @foreach (var img in Model.shirtsRating)
     {
-        <option value="@topic.nameTopic">@topic.nameTopic</option>
+        <div class="card shadow-lg" style="margin-left:10px; margin-top:10px; width: 12rem;" width="150">
+            <embed src="@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="200" />
+            <div class="card-body">
+                <h5 class="card-text ellipsis">@img.name</h5>
+                <p class="card-text ellipsis"><small>@img.description</small></p>
+                <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
+                    <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
+                </form>
+            </div>
+        </div>
+
     }
-</select>
+</div>
+
+    <select class="form-control field-input mb-5 col-md-6">
+        <option value="All">All</option>
+        @foreach (var topic in Model.topic)
+        {
+            <option value="@topic.nameTopic">@topic.nameTopic</option>
+        }
+
+    </select>
+    <form asp-controller="Home" asp-action="Index" id="sortForm">
+        <select class="form-control field-input mb-5 col-md-6" id="size" asp-for="sort" onChange="document.forms['sortForm'].submit();">
+            <option value="Name up">Name up</option>
+            <option value="Name down">Name down</option>
+            <option value="Data up">Data up</option>
+            <option value="Data down">Data down</option>
+        </select>
+    </form>
 <style>
     .flex-container {
         padding: 0;
@@ -115,14 +140,5 @@ else
 
     }
 </div>
-
-
-<script src="~/dist/dropzone.js"></script>
-
-<form action="file-upload" class="dropzone">
-    <div class="fallback">
-        <input name="file" type="file" multiple />
-    </div>
-</form>
 
 

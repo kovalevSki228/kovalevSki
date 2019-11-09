@@ -1,26 +1,34 @@
 ﻿@model SaitCourses.ViewModels.BasketViewModel
 
 
-<table class="table">
-    <tr><th>T-shirt name</th><th>Amount</th><th>Sex</th><th>Size</th><th>Order date</th></tr>
-    @foreach (var Shirt in Model.basket)
-    {
-        if (Shirt.userId == Model.userId && Shirt.purchaseStatus == false)
-        {
 
-            <tr>
-                <td>@Shirt.nameShirt</td>
-                <td>@Shirt.amount</td>
-                <td>@Shirt.sex</td>
-                <td>@Shirt.size</td>
-                <td>@Shirt.dataOfPurchase</td>
-            </tr>
-
-        }
-    }
-</table>
 @if (User.Identity.IsAuthenticated)
 {
+    <table class="table" id="basketTable">
+        <tr><th>T-shirt name</th><th>Amount</th><th>Sex</th><th>Size</th><th>Order date</th></tr>
+        @foreach (var Shirt in Model.basket)
+        {
+            if (Shirt.userId == Model.userId && Shirt.purchaseStatus == false)
+            {
+
+                <tr>
+                    <td>@Shirt.nameShirt</td>
+                    <td>@Shirt.amount</td>
+                    <td>@Shirt.sex</td>
+                    <td>@Shirt.size</td>
+                    <td>@Shirt.dataOfPurchase</td>
+                    <td>
+                        <form asp-controller="TShirt" asp-action="DeleteBasket" asp-route-id="@Shirt.id" method="post">
+                            <button style="display:inline-block" type="submit" class="btn btn-sm btn-outline-danger">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+            }
+        }
+    </table>
     <form asp-controller="TShirt" asp-action="Bay" method="post">
         <button type="submit" class="btn">Bay</button>
     </form>
@@ -31,6 +39,12 @@
 else
 {
     <form asp-controller="TShirt" asp-action="Bay" method="post">
+        <table class="table" id="basketTable">
+            <tr><th>T-shirt name</th><th>Amount</th><th>Sex</th><th>Size</th><th>Order date</th></tr>
+        </table>
+
+         <input onclick="getShirtBasket()" />
+
         <div asp-validation-summary="ModelOnly"></div>
         <div class="form-group">
             <label asp-for="Email"></label><br />
@@ -45,3 +59,4 @@ else
         <button type="submit" class="btn">Bay</button>
     </form>
 }
+<script src="~/js/NoAutorizeBasket.js"></script>

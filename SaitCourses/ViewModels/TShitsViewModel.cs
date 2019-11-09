@@ -29,6 +29,7 @@ namespace SaitCourses.ViewModels
         public string Tag { get; set; }
         public string[] Tegs { get; set; }
         public Tag[] tag { get; set; }
+        public string userId { get; set; }
         public CommentsView[] comments { get; set; }
     }
     public class CommentsView
@@ -43,8 +44,12 @@ namespace SaitCourses.ViewModels
 
     public class HomeViewModel
     {
+        public IEnumerable<Shirt> shirtsRating { get; set; }
         public IEnumerable<Shirt> shirt { get; set; }
         public IEnumerable<Tag> tag { get; set; }
         public IEnumerable<Topic> topic { get; set; }
+        public string sort { get; set; }
+        public string search { get; set; }
+        public string tags { get; set; }
     }
 }

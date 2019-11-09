@@ -2,7 +2,9 @@
 <html>
 <script>
     let userName = "@User.Identity.Name";
-    let shirtId = "@Model.id"
+    let shirtId = "@Model.id";
+    let shirtName = "@Model.TShirtName";
+    let data = "@Model.data";
 </script>
 <head>
     <title>lego</title>
@@ -56,19 +58,25 @@
                     <hr id="line">
                     <p class="font700">size</p>
                     <form asp-controller="TShirt" asp-action="basket" asp-route-id="@Model.id" method="post">
-                        <select class="form-control field-input mb-5 col-md-6" asp-for="sex">
+                        <select class="form-control field-input mb-5 col-md-6"  id="sex" asp-for="sex">
                             <option value="Man">Man</option>
                             <option value="Woman">Woman</option>
                         </select>
-                        <select class="form-control field-input mb-5 col-md-6" asp-for="size">
+                        <select class="form-control field-input mb-5 col-md-6" id="size" asp-for="size">
                             <option value="XL">XL</option>
                             <option value="L">L</option>
                             <option value="M">M</option>
                             <option value="S">S</option>
                             <option value="XS">XS</option>
                         </select>
-
+                        @if (User.Identity.IsAuthenticated)
+                        {
                             <button id="add" class="btn">Bay</button>
+                        }
+                        else
+                        {
+                            <button class="btn" onclick="addShirtBasket(shirtName, data)">Bay</button>
+                        }
                     </form>
                 </div>
             </div>
@@ -110,6 +118,7 @@
 <script src="~/js/signalr.min.js" ></script>
 <script src="~/js/CommentHub.js" defer></script>
 <script src="~/js/ShowCompany.js" defer></script>
+<script src="~/js/NoAutorizeBasket.js"></script>
 <script>
     let markChecks = document.querySelectorAll(".mark-check");
     let starChecks = document.querySelectorAll(".star-img");

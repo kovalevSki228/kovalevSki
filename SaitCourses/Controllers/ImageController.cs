@@ -41,10 +41,10 @@ namespace SaitCourses.Controllers
             return RedirectToAction("Index", "Home");
         }
         [TypeFilter(typeof(UserFilters))]
-        public async Task<IActionResult> Constructor(TShitsViewModel model)
+        public async Task<IActionResult> Constructor(TShitsViewModel model, string userId, string returnUrl)
         {
             var topics = _db.topics.FirstOrDefault(item => item.nameTopic == model.Topic);
-            User user = await _userManager.GetUserAsync(User);
+            User user = await _userManager.FindByIdAsync(userId);
             string tag = model.Tag.Replace("  ", " ");
             string[] tags = tag.Split(' ');
           
@@ -76,7 +76,7 @@ namespace SaitCourses.Controllers
                 });
                 await _db.SaveChangesAsync();
             }
-            return RedirectToAction("Constructor", "TShirt");
+            return Redirect(returnUrl);
         }
         [TypeFilter(typeof(UserFilters))]
         public IActionResult Index()

@@ -32,4 +32,23 @@ namespace SaitCourses.ViewModels
 
         public NoAutorizeBay noAutorize { get; set; }
     }
+    public class BasketViewModelNoAutentific
+    {
+        public int id { get; set; }
+        public string nameShirt { get; set; }
+        public string dataOfPurchase { get; set; }
+        public string size { get; set; }
+        public string sex { get; set; }
+        public string returnUrl { get; set; }
+
+        [Required]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        public NoAutorizeBay noAutorize { get; set; }
+    }
 }

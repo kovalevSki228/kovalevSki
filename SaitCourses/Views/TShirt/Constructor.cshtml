@@ -22,9 +22,9 @@
             </div>
             <div class="col-sm">
                 <div>
-                    @if (Model.returnUrl == null)
+                    @if (Model.description == null)
                     {
-                    <form class="my-form" method="post" asp-controller="Image" asp-action="Constructor">
+                    <form class="my-form" method="post" asp-controller="Image" asp-action="Constructor" asp-route-returnUrl="@Model.returnUrl" asp-route-userId="@Model.userid">
                         <h2 id="Tname">T-Shirts name:</h2>
                         <input class="form-control" asp-for="TShirtName" placeholder="Name" type="text">
                         <p>Description:</p>
@@ -47,7 +47,7 @@
                     }
                     else
                     {
-                <form class="my-form" method="post" asp-controller="TShirt" asp-action="Edit" asp-route-id="@Model.id" asp-route-returnUrl="@Model.returnUrl">
+                <form class="my-form" method="post" asp-controller="TShirt" asp-action="Edit" asp-route-id="@Model.id" asp-route-returnUrl="@Model.returnUrl" asp-route-userId="@Model.userid">
                     <h2 id="Tname">T-Shirts name:</h2>
                     <input class="form-control" asp-for="TShirtName" placeholder="Name" value="@Model.TShirtName" type="text">
                     <p>Description:</p>

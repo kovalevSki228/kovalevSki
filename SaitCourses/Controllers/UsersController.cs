@@ -72,8 +72,23 @@ namespace SaitCourses.Controllers
             {
                 return NotFound();
             }
-
-            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email, Name = user.UserName, FirstName = user.FirstName, LastName = user.LastName, shirts = _db.tshirts.ToArray()};
+            var shirt = _db.tshirts.Where(item => item.userId == id).ToArray();
+            var comment = _db.comments.Where(item => item.userId == id).ToArray(); ;
+            var Achievemen = new Achievements
+            {
+                comments = comment.Length,
+                getLike = 3,
+                setLike = 3,
+                shirt = shirt.Length,
+            };
+            EditUserViewModel model = new EditUserViewModel {
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                shirts = _db.tshirts.ToArray(),
+                achievements = Achievemen};
             return View(model);
         }
         [TypeFilter(typeof(UserFilters))]

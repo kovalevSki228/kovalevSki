@@ -12,6 +12,7 @@ using SaitCourses.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using System.Net;
+using Hanssens.Net;
 
 namespace SaitCourses.Controllers
 {
@@ -66,24 +67,27 @@ namespace SaitCourses.Controllers
         }
 
         [TypeFilter(typeof(UserFilters))]
-        public async Task<IActionResult> Constructor(int id, string returnUrl)
+        public async Task<IActionResult> Constructor(int id, string returnUrl, string userId)
         {
             string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
 
-            if (String.IsNullOrEmpty(returnUrl))
+            if (id == 0)
             {
                 return View(new TShitsViewModel
                 {
+                    returnUrl = returnUrl,
+                    userid = userId,
                     Topics = topics,
                     Tegs = _db.tags.Select(item => item.name).ToArray(),
                     tag = _db.tags.ToArray()
-                });
+                }) ;
             }
             else
             {
                 Shirt shirt = await _db.tshirts.FindAsync(id);
                 return View(new TShitsViewModel
                 {
+                    userid = userId,
                     returnUrl = returnUrl,
                     id = shirt.id,
                     image = shirt.image,
@@ -199,6 +203,7 @@ namespace SaitCourses.Controllers
             }
             else
             {
+
                 var result = _db.tshirts.FirstOrDefault(item => item.id == id);
                 _db.baskets.Add(new Basket
                 {
@@ -206,7 +211,7 @@ namespace SaitCourses.Controllers
                     nameShirt = result.name,
                     amount = 1,
                     shirtid = result.id,
-                    userId = clientIP(),
+                   // userId = clientIP(),
                     purchaseStatus = false,
                     sex = model.sex,
                     size = model.size
@@ -214,6 +219,19 @@ namespace SaitCourses.Controllers
                 });
                 await _db.SaveChangesAsync();
                 var _basket = _db.baskets.Where(item => item.userId == clientIP()).ToList();
+
+                //var config = new LocalStorageConfiguration()
+                //{
+                //    Filename = "Shirt",
+                //    AutoSave = true,
+                //};
+                var storage = new LocalStorage();
+
+                var key = "ShirtName";
+                var value = result.name;
+                storage.Store(key, value);
+
+
                 return View(new BasketViewModel
                 {
                     userId = clientIP(),
@@ -223,7 +241,16 @@ namespace SaitCourses.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Bay(BasketViewModel model)
+        public async Task<IActionResult> DeleteBasket(int id)
+        {
+            var result = _db.baskets.FirstOrDefault(item => item.id == id);
+            _db.baskets.Remove(result);
+            await _db.SaveChangesAsync();
+            return RedirectToAction("basket");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Bay(BasketViewModel model, string json)
         {
 
             if (User.Identity.IsAuthenticated)
@@ -234,7 +261,7 @@ namespace SaitCourses.Controllers
                 foreach (var status in result)
                 {
                     status.purchaseStatus = true;
-                    message += "\n" + status.nameShirt.ToString() + ", price 30 $";
+                    message +="\n" + status.nameShirt.ToString() + ", price 30 $";
                     _db.baskets.Update(status);
                     await _db.SaveChangesAsync();
                 }

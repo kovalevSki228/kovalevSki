@@ -32,8 +32,46 @@ namespace SaitCourses.Controllers
             _db = db;
         }
 
-        public IActionResult Index(string search, string tag)
-        {
+        public IActionResult Index(HomeViewModel homeViewModel, string search, string tag , string sort)
+         {
+            Shirt[] allShirt = _db.tshirts.ToArray();
+            double[,] shirtTemp = new double[allShirt.Length, 2];
+            for (int j = 0; j < allShirt.Length; j++)
+            {
+                shirtTemp[j, 0] = allShirt[j].id;
+                int[] resaultRating = _db.ratings.Where(item => item.shirt.id == allShirt[j].id).Select(item => item.value).ToArray();
+                double marksRes = 0;
+                if (resaultRating.Length > 0)
+                {
+                    for (int k = 0; k < resaultRating.Length; k++)
+                    {
+                        marksRes += resaultRating[k] + 1;
+                    }
+                    marksRes /= resaultRating.Length;
+                }
+                shirtTemp[j, 1] = marksRes;
+            }
+            for (int j = 0; j < allShirt.Length; j++)
+            {
+                for (int k = 0; k < allShirt.Length - 1; k++)
+                {
+                    if (shirtTemp[k, 1] < shirtTemp[k + 1, 1])
+                    {
+                        double temp = shirtTemp[k, 1];
+                        shirtTemp[k, 1] = shirtTemp[k + 1, 1];
+                        shirtTemp[k + 1, 1] = temp;
+                        temp = shirtTemp[k, 0];
+                        shirtTemp[k, 0] = shirtTemp[k + 1, 0];
+                        shirtTemp[k + 1, 0] = temp;
+                    }
+                }
+            }
+            Shirt[] shirtsSortRating = new Shirt[5];
+            for (int j = 0; j < allShirt.Length; j++)
+            {
+                if (j == 5) break;
+                shirtsSortRating[j] = _db.tshirts.FirstOrDefault(item => item.id == shirtTemp[j, 0]);
+            }
             if (!String.IsNullOrEmpty(tag))
             {
                 var tags = _db.tags.FirstOrDefault(item => item.name == tag);
@@ -48,21 +86,69 @@ namespace SaitCourses.Controllers
                     _shirt[i] = _db.tshirts.FirstOrDefault(item => item.id == shId.shirtid);
                     i++;
                 }
-                _shirt = _shirt.OrderBy(item => item.name).ToArray();
+                switch (homeViewModel.sort)
+                {
+                    case "Name up": _shirt = _shirt.OrderBy(item => item.name).ToArray();
+                        break;
+                    case "Name down": _shirt = _shirt.OrderByDescending(item => item.name).ToArray();
+                        break;
+                    case "Data up":
+                        _shirt = _shirt.OrderBy(item => item.createDate).ToArray();
+                        break;
+                    case "Data down":
+                        _shirt = _shirt.OrderByDescending(item => item.createDate).ToArray();
+                        break;
+                }
+
+                
                 return View(new HomeViewModel
                 {
+                    shirtsRating = shirtsSortRating.ToList(),
                     shirt = _shirt.ToList(),
                     tag = _db.tags.ToList(),
                     topic = _db.topics.ToList()
                 });
             }
-            var shirtSearch = _db.tshirts.Select(item => item);
+            var shirtSearch = _db.tshirts.Select(item => item).ToList();
             if (!String.IsNullOrEmpty(search))
             {
-                shirtSearch = shirtSearch.Where(item => item.description.Contains(search) || item.name.Contains(search));
+                //var commentSearch = _db.comments.Select(item => item);
+                //commentSearch = commentSearch.Where(item => item.text.Contains(search) || item.user.UserName.Contains(search));
+                //var tagsSearch = _db.tags.Select(item => item);
+                //tagsSearch = tagsSearch.Where(item => item.name.Contains(search));
+                //var tagSearch = _db.tagInTShirts.Select(item => item).ToArray();
+                shirtSearch = shirtSearch.Where(item => item.description.Contains(search) || item.name.Contains(search)).ToList();
+                //for (int i = 0; i < commentSearch.Count(); i++)
+                //{
+                //    if (shirtSearch.FirstOrDefault(item => item.id == commentSearch.) == null)
+                //        shirtSearch.Add( _db.tshirts.FirstOrDefault(item => item.id == commentSearch[i].tShirtId));
+                //}
+                //for (int i = 0; i < tagsSearch.Count(); i++)
+                //{
+                //    var temp = _db.tagInTShirts.FirstOrDefault(item => item.tagid == tagsSearch[i].id);
+                //    if (shirtSearch.FirstOrDefault(item => item.id == temp.shirtid) == null)
+                //        shirtSearch.Add(_db.tshirts.FirstOrDefault(item => item.id == temp.shirtid));
+                //}
+
+            }
+            switch (sort)
+            {
+                case "Name up":
+                    shirtSearch = shirtSearch.OrderBy(item => item.name).ToList();
+                    break;
+                case "Name down":
+                    shirtSearch = shirtSearch.OrderByDescending(item => item.name).ToList();
+                    break;
+                case "Data up":
+                    shirtSearch = shirtSearch.OrderBy(item => item.createDate).ToList();
+                    break;
+                case "Data down":
+                    shirtSearch = shirtSearch.OrderByDescending(item => item.createDate).ToList();
+                    break;
             }
             return View(new HomeViewModel
             {
+                shirtsRating = shirtsSortRating.ToList(),
                 shirt = shirtSearch.ToList(),
                 tag = _db.tags.ToList(),
                 topic = _db.topics.ToList()

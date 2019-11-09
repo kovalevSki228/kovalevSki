@@ -84,7 +84,8 @@
 </form>
     @*@Html.Partial("Edit")*@
 </div>
-<a class="dropdown-item" asp-controller="TShirt" asp-action="Constructor" asp-area="">@Localizer["Setting"]</a>
+<a class="dropdown-item" asp-controller="TShirt" asp-action="Constructor" 
+   asp-route-returnUrl="@Context.Request.Path" asp-route-userId="@Model.Id">@Localizer["Setting"]</a>
 <div class="row align-items-baseline container pb-3 pr-sm-4 ">
     @foreach (var img in Model.shirts)
     {
