@@ -21,7 +21,7 @@
         ViewBag.Title = "Edit";
     }*@
 <script src="~/js/theme.js"></script>
-<div class="form-signin col m-auto container body-content">
+
     @*@await Html.PartialAsync("_SelectLanguagePartial")*@
     <form asp-controller="Home" asp-action="SetLanguage" style="margin-top:20px;"
           asp-route-returnUrl="@Context.Request.Path"
@@ -29,61 +29,119 @@
         @Localizer["Language: "] <select class="form-control" name="culture" onchange="this.form.submit();"
                                          asp-for="@requestCulture.RequestCulture.UICulture.Name"
                                          asp-items="cultureItems"></select>
+
     </form>
-    <form class="form-signin col m-auto" method="post" asp-action="Setting" asp-controller="Users">
-        <div asp-validation-summary="All" class="text-danger"></div>
-        @*<div class="form-group">
-            <input type="hidden" asp-for="Id" class="form-control" />
-        </div>*@
-        <div class="row">
-            <div>
+    <div class="form-signin row m-auto container body-content">
+        <form class="form-signin col m-auto" method="post" asp-action="Setting" asp-controller="Users">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @*<div class="form-group">
+                <input type="hidden" asp-for="Id" class="form-control" />
+            </div>*@
+            <div class="row">
+                <div>
 
-                <label asp-for="Email" class="control-label">@Localizer["Email"]</label>
-                <input type="text" asp-for="Email" class="form-control" />
+                    <label asp-for="Email" class="control-label">@Localizer["Email"]</label>
+                    <input type="text" asp-for="Email" class="form-control" />
+                </div>
+                <div>
+                    <label asp-for="Name" class="control-label">@Localizer["Name"]</label>
+                    <input type="text" asp-for="Name" class="form-control" />
+                </div>
             </div>
-            <div>
-                <label asp-for="Name" class="control-label">@Localizer["Name"]</label>
-                <input type="text" asp-for="Name" class="form-control" />
+            <div class="row">
+                <div>
+                    <label asp-for="FirstName" class="control-label">@Localizer["FirstName"]</label>
+                    <input type="text" asp-for="FirstName" class="form-control" />
+                </div>
+                <div>
+                    <label asp-for="LastName" class="control-label">@Localizer["LastName"]</label>
+                    <input type="text" asp-for="LastName" class="form-control" />
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div>
-                <label asp-for="FirstName" class="control-label">@Localizer["FirstName"]</label>
-                <input type="text" asp-for="FirstName" class="form-control" />
-            </div>
-            <div>
-                <label asp-for="LastName" class="control-label">@Localizer["LastName"]</label>
-                <input type="text" asp-for="LastName" class="form-control" />
-            </div>
-        </div>
-        <div class="row">
-            <div>
-                <label asp-for="Sex" class="control-label">Sex</label>
-                <input type="text" asp-for="Sex" class="form-control" />
-            </div>
-            <div>
-                <label asp-for="OldPassword" class="control-label">@Localizer["OldPassword"]</label>
-                <input type="text" asp-for="OldPassword" class="form-control" />
-            </div>
-
-        </div>
-        <div class="row">
-            <div>
-                <label asp-for="Password" class="control-label">@Localizer["Password"]</label>
-                <input type="text" asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password"></span>
+            <div class="row">
+                <div>
+                    <label asp-for="Sex" class="control-label">Sex</label>
+                    <input type="text" asp-for="Sex" class="form-control" />
+                </div>
+                <div>
+                    <label asp-for="OldPassword" class="control-label">@Localizer["OldPassword"]</label>
+                    <input type="text" asp-for="OldPassword" class="form-control" />
+                </div>
 
             </div>
-            <div>
-                <label asp-for="PasswordConfim" class="control-label">@Localizer["PasswordConfim"]</label>
-                <input type="text" asp-for="PasswordConfim" class="form-control" />
-                <span asp-validation-for="PasswordConfim"></span>
+            <div class="row">
+                <div>
+                    <label asp-for="Password" class="control-label">@Localizer["Password"]</label>
+                    <input type="text" asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password"></span>
+
+                </div>
+                <div>
+                    <label asp-for="PasswordConfim" class="control-label">@Localizer["PasswordConfim"]</label>
+                    <input type="text" asp-for="PasswordConfim" class="form-control" />
+                    <span asp-validation-for="PasswordConfim"></span>
+                </div>
+                <input type="submit" value="Add" class="btn btn-outline-primary" />
             </div>
-            <input type="submit" value="Add" class="btn btn-outline-primary" />
-            </div>
-</form>
-    @*@Html.Partial("Edit")*@
-</div>
+        </form>
+        <div>
+
+            <h3>
+
+
+
+                Comments: @Model.achievements.comments / @Model.achievements.numComments
+                @for (int i = 0; i < @Model.achievements.comments / 5; i++)
+                {
+                    <label>
+                        <img width="50px" class="star-img"
+                             src="https://res.cloudinary.com/del5wrr12/image/upload/v1573272389/siddizvcmosoxkj0ylap.png" />
+                    </label>
+                }
+            </h3>
+            <p>
+                <h3>
+                    Get Like: @Model.achievements.getLike / @Model.achievements.numGetLike
+                    @for (int i = 0; i < @Model.achievements.getLike / 5; i++)
+                    {
+                        <label>
+                            <img width="50px" class="star-img"
+                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573272389/siddizvcmosoxkj0ylap.png" />
+                        </label>
+                    }
+                </h3>
+            </p>
+            <p>
+                <h3>
+                    Set Like: @Model.achievements.setLike / @Model.achievements.numSetLike
+                    @for (int i = 0; i < @Model.achievements.setLike / 5; i++)
+                    {
+                        <label>
+                            <img width="50px" class="star-img"
+                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573272389/siddizvcmosoxkj0ylap.png" />
+                        </label>
+                    }
+                </h3>
+            </p>
+            </h3></p>
+            <p>
+                <h3>
+                    Shirt: @Model.achievements.shirt / @Model.achievements.numShirt
+                    @for (int i = 0; i < @Model.achievements.shirt / 5; i++)
+                    {
+                        <label>
+                            <img width="50px" class="star-img"
+                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573272389/siddizvcmosoxkj0ylap.png" />
+                        </label>
+                    }
+                </h3>
+            </p>
+            </h3>
+            </p>
+        </div>
+
+        @*@Html.Partial("Edit")*@
+    </div>
 <a class="dropdown-item" asp-controller="TShirt" asp-action="Constructor" 
    asp-route-returnUrl="@Context.Request.Path" asp-route-userId="@Model.Id">@Localizer["Setting"]</a>
 <div class="row align-items-baseline container pb-3 pr-sm-4 ">

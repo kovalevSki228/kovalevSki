@@ -72,14 +72,20 @@ namespace SaitCourses.Controllers
             {
                 return NotFound();
             }
-            var shirt = _db.tshirts.Where(item => item.userId == id).ToArray();
-            var comment = _db.comments.Where(item => item.userId == id).ToArray(); ;
+            var shirt = _db.tshirts.Where(item => item.userId == user.Id).ToArray();
+            var comment = _db.comments.Where(item => item.userId == user.Id).ToArray();
+            var getLike = _db.likes.Where(item => item.userId == user.Id).ToArray();
+            int setLike;
             var Achievemen = new Achievements
             {
                 comments = comment.Length,
-                getLike = 3,
-                setLike = 3,
+                getLike = getLike.Length,
+                setLike = 0,
                 shirt = shirt.Length,
+                numComments = comment.Length / 5 * 5 + 5,
+                numGetLike = getLike.Length / 5 * 5 + 5,
+                numSetLike = 5,
+                numShirt = shirt.Length / 5 * 5 + 5,
             };
             EditUserViewModel model = new EditUserViewModel {
                 Id = user.Id,
@@ -88,7 +94,8 @@ namespace SaitCourses.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 shirts = _db.tshirts.ToArray(),
-                achievements = Achievemen};
+                achievements = Achievemen
+            };
             return View(model);
         }
         [TypeFilter(typeof(UserFilters))]

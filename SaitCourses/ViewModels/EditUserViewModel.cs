@@ -37,6 +37,18 @@ namespace SaitCourses.ViewModels
         public string image { get; set; }
         public string nameImg { get; set; }
         public string description { get; set; }
+        public Achievements achievements { get; set; }
+    }
 
+    public class Achievements
+    {
+        public int comments { get; set; }
+        public int shirt { get; set; }
+        public int setLike { get; set; }
+        public int getLike { get; set; }
+        public int numComments { get; set; }
+        public int numShirt { get; set; }
+        public int numSetLike { get; set; }
+        public int numGetLike { get; set; }
     }
 }
