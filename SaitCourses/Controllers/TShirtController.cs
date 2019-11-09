@@ -28,12 +28,18 @@ namespace SaitCourses.Controllers
             string ip = heserver.AddressList[1].ToString();
             return ip;
         }
+
+        private List<NoAutinBasket> noAutin(List<NoAutinBasket> model)
+        {
+            return model;
+        }
         public TShirtController(ApplicationContext db, UserManager<User> userManager, IConfiguration configuration)
         {
             _db = db;
             _userManager = userManager;
             Configuration = configuration;
         }
+
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> Delete(int id)
         {
@@ -51,7 +57,9 @@ namespace SaitCourses.Controllers
             }
             return RedirectToAction("Setting", "Users");
         }
+
         public IActionResult CreateTopic() => View();
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateTopic(string name)
@@ -172,7 +180,6 @@ namespace SaitCourses.Controllers
                 });
             }
         }
-
         
         [HttpPost]
         public async Task<IActionResult> basket(int id, BasketViewModel model)
@@ -250,7 +257,7 @@ namespace SaitCourses.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Bay(BasketViewModel model, string json)
+        public async Task<IActionResult> Bay(BasketViewModel model, string messageBasket)
         {
 
             if (User.Identity.IsAuthenticated)
@@ -276,14 +283,7 @@ namespace SaitCourses.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = _db.baskets.Where(item => item.userId == clientIP() && item.purchaseStatus == false).ToList();
-                    string message = "";
-                    foreach (var status in result)
-                    {
-                        status.purchaseStatus = true;
-                        message += "\n" + status.nameShirt.ToString() + ", price 30 $";
-                        _db.baskets.Update(status);
-                        await _db.SaveChangesAsync();
-                    }
+                    string message = model.noAutorize;
                     EmailService emailservice = new EmailService(Configuration);
 
                     await emailservice.SendEmailAsync(model.Email, "Purchase",
@@ -302,11 +302,13 @@ namespace SaitCourses.Controllers
 
         [TypeFilter(typeof(UserFilters))]
         public IActionResult Index() => View(_db.images.ToList());
+
         [TypeFilter(typeof(UserFilters))]
         public IActionResult EditShirt()
         {
             return RedirectToAction("Index", "Home");
         }
+
         [HttpPost]
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> EditShirt(TShitsViewModel model)

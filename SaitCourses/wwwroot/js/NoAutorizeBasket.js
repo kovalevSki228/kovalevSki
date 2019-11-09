@@ -25,7 +25,8 @@
 }
 
 function getShirtBasket() {
-    
+
+    var message ="";
     var t = "";
     col = +localStorage.getItem("Col");
     for (var i = 1; i <=col; i++) {
@@ -41,9 +42,10 @@ function getShirtBasket() {
         //localStorage.removeItem("Shirt sex " + i);
         //localStorage.removeItem("Shirt data " + i);
         //localStorage.removeItem("Col");
+        message += localStorage.getItem("Shirt name " + i) + ", size: " + localStorage.getItem("Shirt size " + i) + ", sex: " + localStorage.getItem("Shirt sex " + i) +", price: 30$; "; 
         t += tr;
     }
-    alert(t);
+    document.getElementById("messadeBasked").value = message;
     document.getElementById("basketTable").innerHTML += t;
 }
 
@@ -57,3 +59,4 @@ function clearBasket() {
         localStorage.removeItem("Col");
     }
 }
+

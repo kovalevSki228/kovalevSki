@@ -30,7 +30,7 @@ namespace SaitCourses.ViewModels
         [Display(Name = "Name")]
         public string Name { get; set; }
 
-        public NoAutorizeBay noAutorize { get; set; }
+        public string noAutorize { get; set; }
     }
     public class BasketViewModelNoAutentific
     {

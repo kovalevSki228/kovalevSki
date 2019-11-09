@@ -23,6 +23,7 @@
 <script src="~/js/theme.js"></script>
 
     @*@await Html.PartialAsync("_SelectLanguagePartial")*@
+<div>
     <form asp-controller="Home" asp-action="SetLanguage" style="margin-top:20px;"
           asp-route-returnUrl="@Context.Request.Path"
           method="post" class="form-inline">
@@ -31,12 +32,13 @@
                                          asp-items="cultureItems"></select>
 
     </form>
+</div>
     <div class="form-signin row m-auto container body-content">
         <form class="form-signin col m-auto" method="post" asp-action="Setting" asp-controller="Users">
             <div asp-validation-summary="All" class="text-danger"></div>
             @*<div class="form-group">
-                <input type="hidden" asp-for="Id" class="form-control" />
-            </div>*@
+            <input type="hidden" asp-for="Id" class="form-control" />
+        </div>*@
             <div class="row">
                 <div>
 
@@ -81,15 +83,14 @@
                     <input type="text" asp-for="PasswordConfim" class="form-control" />
                     <span asp-validation-for="PasswordConfim"></span>
                 </div>
-                <input type="submit" value="Add" class="btn btn-outline-primary" />
+
             </div>
+            <input type="submit" value="Add" class="btn btn-outline-primary" />
+            
         </form>
-        <div>
+        <div class="col-sm-7 ">
 
             <h3>
-
-
-
                 Comments: @Model.achievements.comments / @Model.achievements.numComments
                 @for (int i = 0; i < @Model.achievements.comments / 5; i++)
                 {
@@ -99,75 +100,77 @@
                     </label>
                 }
             </h3>
-            <p>
                 <h3>
                     Get Like: @Model.achievements.getLike / @Model.achievements.numGetLike
                     @for (int i = 0; i < @Model.achievements.getLike / 5; i++)
                     {
                         <label>
                             <img width="50px" class="star-img"
-                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573272389/siddizvcmosoxkj0ylap.png" />
+                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573274245/vuuv8hyljb8vohdy2caj.png" />
                         </label>
                     }
                 </h3>
-            </p>
-            <p>
                 <h3>
                     Set Like: @Model.achievements.setLike / @Model.achievements.numSetLike
                     @for (int i = 0; i < @Model.achievements.setLike / 5; i++)
                     {
                         <label>
                             <img width="50px" class="star-img"
-                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573272389/siddizvcmosoxkj0ylap.png" />
+                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573274297/pme8tkxiucfwlladmnfd.png" />
                         </label>
                     }
                 </h3>
-            </p>
-            </h3></p>
-            <p>
+            </h3>
                 <h3>
                     Shirt: @Model.achievements.shirt / @Model.achievements.numShirt
                     @for (int i = 0; i < @Model.achievements.shirt / 5; i++)
                     {
                         <label>
                             <img width="50px" class="star-img"
-                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573272389/siddizvcmosoxkj0ylap.png" />
+                                 src="https://res.cloudinary.com/del5wrr12/image/upload/v1573274248/yytsyirkkkbupcsmurfq.png" />
                         </label>
                     }
                 </h3>
-            </p>
             </h3>
-            </p>
         </div>
 
         @*@Html.Partial("Edit")*@
     </div>
-<a class="dropdown-item" asp-controller="TShirt" asp-action="Constructor" 
-   asp-route-returnUrl="@Context.Request.Path" asp-route-userId="@Model.Id">@Localizer["Setting"]</a>
-<div class="row align-items-baseline container pb-3 pr-sm-4 ">
-    @foreach (var img in Model.shirts)
-    {
-        if (img.userId == Model.Id)
-        {
-            <div class="card left shadow-lg" style="margin-left:10px; width: 11rem;" width="100 col-sm-3 pb-3 pr-sm-4" >
-                <embed src="@img.image.Replace(".svg", ".png")" class="card-img-top" alt="..." height="150" />
-                <div class="card-body ellipsis">
-                    <h6 class="card-text ellipsis">@img.name</h6>
-                    <p class="card-text ellipsis">@img.description</p>
-                    <div class="row ">
-                        <form asp-controller="TShirt" asp-action="Delete" asp-route-id="@img.id" method="post">
-                            <button type="submit" class="btn btn-sm btn-danger"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572397986/oqlhs3sjy8orthqrhtth.png"></button>
-                        </form>
-                        <form asp-controller="TShirt" asp-action="Constructor" asp-route-id="@img.id" asp-route-returnUrl="@Context.Request.Path">
-                            <button type="submit" class="btn btn-sm float-right btn-primary">Edit</button>
-                        </form>
-                        <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
-                            <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
-                        </form>
-
-                    </div>
+    
+    <div class="row align-items-baseline container pb-3 pr-sm-4 ">
+        <div class="card left shadow-lg" style="margin-left:10px; width: 11rem;" width="100 col-sm-3 pb-3 pr-sm-4">
+            <div class="card-body ellipsis">
+                <div class="row ">
+                    <a class=" btn btn-block" style="margin-bottom:10px; margin-top:10px;" asp-controller="TShirt" asp-action="Constructor"
+                       asp-route-returnUrl="@Context.Request.Path" asp-route-userId="@Model.Id">
+                        @Localizer["Constructor"]
+                    </a>
                 </div>
             </div>
+        </div>
+        @foreach (var img in Model.shirts)
+        {
+            if (img.userId == Model.Id)
+            {
+                <div class="card left shadow-lg" style="margin-left:10px; width: 11rem;" width="100 col-sm-3 pb-3 pr-sm-4">
+                    <embed src="@img.image.Replace(".svg", ".png")" class="card-img-top" alt="..." height="130" />
+                    <div class="card-body ellipsis">
+                        <h6 class="card-text ellipsis">@img.name</h6>
+                        <p class="card-text ellipsis">@img.description</p>
+                        <div class="row ">
+                            <form asp-controller="TShirt" asp-action="Delete" asp-route-id="@img.id" method="post">
+                                <button type="submit" class="btn btn-sm btn-danger"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572397986/oqlhs3sjy8orthqrhtth.png"></button>
+                            </form>
+                            <form asp-controller="TShirt" asp-action="Constructor" asp-route-id="@img.id" asp-route-returnUrl="@Context.Request.Path">
+                                <button type="submit" class="btn btn-sm float-right btn-primary">Edit</button>
+                            </form>
+                            <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
+                                <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    }
-</div>
+    </div>
