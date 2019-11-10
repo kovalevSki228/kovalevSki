@@ -27,6 +27,69 @@ namespace SaitCourses.Controllers
             _db = db;
             Configuration = configuration;
         }
+        private async Task<User> GetUser()
+        {
+            User user = await _userManager.GetUserAsync(User);
+            return user;
+        }
+        private async void AdminCheck(User user)
+        {
+            if (_db.Users.Count() == 1)
+            {
+                await _userManager.AddToRoleAsync(user, "Admin");
+                await _signInManager.SignInAsync(user, false);
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(user, "User");
+                await _signInManager.SignInAsync(user, false);
+            }
+        }
+        private async void PasswordCheck(LoginViewModel model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
+            if (result.Succeeded)
+            {
+                AdminCheck(await GetUser());
+            }
+            else
+                ModelState.AddModelError("", "Incorrect login or password");
+        }
+        private async void LockCheck(LoginViewModel model, User user)
+        {
+            bool blocked = await _userManager.GetLockoutEnabledAsync(user);
+            if (blocked)
+            {
+                PasswordCheck(model);
+            }
+            else
+            {
+                ModelState.AddModelError("", "You account is blocked");
+            }
+        }
+        private async void VerifyEmailConfirmation(LoginViewModel model, User user)
+        {
+            bool emailConf = await _userManager.IsEmailConfirmedAsync(user);
+            if (emailConf)
+            {
+                LockCheck(model, user);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Email wasn't confirm");
+            }
+        }
+        private async void CheckUser(LoginViewModel model, User user)
+        {
+            if (user != null)
+            {
+                VerifyEmailConfirmation(model, user);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Incorrect login or password");
+            }
+        }
 
         [HttpGet]
         public IActionResult Register()
@@ -95,7 +158,7 @@ namespace SaitCourses.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -140,6 +203,7 @@ namespace SaitCourses.Controllers
                 {
                     ModelState.AddModelError("", "Incorrect login or password");
                 }
+                
             }
             return View(model); 
         }

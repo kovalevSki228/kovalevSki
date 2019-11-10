@@ -2,9 +2,6 @@
 @{
     ViewData["Title"] = "Bay";
 }
-    <script>
-        window.onload = clearBasket();
-    </script>
     <h1>
         Thank you for your purchase!
         <p>Additional information sent by mail</p>
@@ -12,3 +9,9 @@
 
 
 <script src="~/js/NoAutorizeBasket.js"></script>
+@if (!User.Identity.IsAuthenticated)
+{
+<script>
+    document.addEventListener('DOMContentLoaded', clearBasket(), false);
+</script>
+}

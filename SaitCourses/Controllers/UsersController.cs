@@ -24,31 +24,49 @@ namespace SaitCourses.Controllers
             _userManager = userManager;
             _db = db;
         }
+        private async Task<User> GetUser()
+        {
+            User user = await _userManager.GetUserAsync(User);
+            return user;
+        }
+        private async Task<User> GetUser(string id)
+        {
+            User user = await _userManager.FindByIdAsync(id);
+            return user;
+        }
+        private Comment[] GetComment (User user)
+        {
+            return _db.comments.Where(item => item.userId == user.Id).ToArray();
+        }
+        private Like[] GetLike(User user)
+        {
+            return _db.likes.Where(item => item.userId == user.Id).ToArray();
+        }
+        private Shirt[] GetShirt(User user)
+        {
+            return _db.tshirts.Where(item => item.userId == user.Id).ToArray();
+        }
+        private Achievements Achievemen(Comment[] comment, Like[] getLike,  Shirt[] shirt)
+        {
+            return new Achievements
+            {
+                comments = comment.Length,
+                getLike = getLike.Length,
+                setLike = 0,
+                shirt = shirt.Length,
+                numComments = comment.Length / 5 * 5 + 5,
+                numGetLike = getLike.Length / 5 * 5 + 5,
+                numSetLike = 5,
+                numShirt = shirt.Length / 5 * 5 + 5,
+            };
+        }
+
         [Authorize(Roles = "Admin")]
         public IActionResult Index() => View(_userManager.Users.ToList());
 
         [Authorize(Roles = "Admin")]
         public IActionResult Create() => View();
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(CreateUserViewModel model)
-        {
-            User user = new User { Email = model.Email, UserName = model.Name };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if(result.Succeeded)
-            {
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                foreach(var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-            return View(model);
-        }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SettingAdmin(string id)
         {
@@ -58,9 +76,16 @@ namespace SaitCourses.Controllers
             {
                 return NotFound();
             }
-
-            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email, Name = user.UserName, FirstName = user.FirstName, LastName = user.LastName, shirts = _db.tshirts.ToArray() };
-            return View(model);
+            return View(new EditUserViewModel {
+                Id = user.Id, 
+                Email = user.Email,
+                Name = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName, 
+                shirts = _db.tshirts.ToArray(),
+                achievements = Achievemen(GetComment(await GetUser(id)), GetLike(await GetUser(id)), GetShirt(await GetUser(id)))
+                
+            });
         }
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> Setting(string id)
@@ -72,31 +97,18 @@ namespace SaitCourses.Controllers
             {
                 return NotFound();
             }
-            var shirt = _db.tshirts.Where(item => item.userId == user.Id).ToArray();
-            var comment = _db.comments.Where(item => item.userId == user.Id).ToArray();
-            var getLike = _db.likes.Where(item => item.userId == user.Id).ToArray();
-            int setLike;
-            var Achievemen = new Achievements
+            
+            return View(new EditUserViewModel
             {
-                comments = comment.Length,
-                getLike = getLike.Length,
-                setLike = 0,
-                shirt = shirt.Length,
-                numComments = comment.Length / 5 * 5 + 5,
-                numGetLike = getLike.Length / 5 * 5 + 5,
-                numSetLike = 5,
-                numShirt = shirt.Length / 5 * 5 + 5,
-            };
-            EditUserViewModel model = new EditUserViewModel {
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 shirts = _db.tshirts.ToArray(),
-                achievements = Achievemen
-            };
-            return View(model);
+                achievements = Achievemen(GetComment(await GetUser()), GetLike(await GetUser()), GetShirt(await GetUser()))
+
+            });
         }
         [TypeFilter(typeof(UserFilters))]
         public IActionResult Constructor()
@@ -109,9 +121,6 @@ namespace SaitCourses.Controllers
                 tag = _db.tags.ToArray()
             });
         }
-
-
-
         public async Task<IActionResult> More(int id)
         {
 
@@ -176,7 +185,6 @@ namespace SaitCourses.Controllers
                 comments = commentsView 
             });
         }
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Block(string id)
@@ -200,10 +208,9 @@ namespace SaitCourses.Controllers
             }
             return RedirectToAction("Index");
         }
-
         [HttpPost]
         [TypeFilter(typeof(UserFilters))]
-        public async Task<IActionResult> SetRating(TShitsViewModel model)
+        public async Task<IActionResult> SetRating(TShitsViewModel model, string returnUrl)
         {
             User user = await _userManager.GetUserAsync(User);
             Shirt shirt = _db.tshirts.FirstOrDefault(item => item.id == model.id);
@@ -216,14 +223,14 @@ namespace SaitCourses.Controllers
                     {
                         _db.ratings.Add(new Rating { shirt = shirt, user = user, value = i });
                         await _db.SaveChangesAsync();
-                        return RedirectToAction("Index","Home");
+                        return Redirect(returnUrl);
                     }
                     else
                     {
                         mark.value = i;
                         _db.ratings.Update(mark);
                         await _db.SaveChangesAsync();
-                        return RedirectToAction("Index", "Home");
+                        return Redirect(returnUrl);
                     }
                 }
             }
@@ -232,9 +239,8 @@ namespace SaitCourses.Controllers
                 _db.ratings.Remove(mark);
                 await _db.SaveChangesAsync();
             }
-            return RedirectToAction("Index", "Home");
+            return Redirect(returnUrl);
         }
-
         [HttpPost]
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> Setting(EditUserViewModel model)
@@ -279,7 +285,6 @@ namespace SaitCourses.Controllers
             EditUserViewModel model = new EditUserViewModel {Id = user.Id, Email = user.Email, Name = user.UserName, FirstName = user.FirstName, LastName = user.LastName };
             return View(model);
         }
-
         [HttpPost]
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> Edit(EditUserViewModel model)
@@ -333,7 +338,6 @@ namespace SaitCourses.Controllers
             }
             return View(model);
         }
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete(string id)
@@ -356,7 +360,6 @@ namespace SaitCourses.Controllers
             ChangePasswordViewModel model = new ChangePasswordViewModel { Id = user.Id, Name = user.Name };
             return View(model);
         }
-
         [HttpPost]
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)

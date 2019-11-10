@@ -29,6 +29,10 @@ namespace SaitCourses.Models
             :base(options)
         {
             Database.EnsureCreated();
+            topics.Add(new Topic
+            {
+                nameTopic = "ALL"
+            });
         }
     }
 }

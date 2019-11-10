@@ -3,38 +3,6 @@
 @model SaitCourses.ViewModels.HomeViewModel
 
 
-<style>
-    #dropbox {
-        border: 4px dashed #ccc;
-        padding-left: 8px;
-    }
-
-    .my-form {
-        margin-top: 10px;
-    }
-
-    .gallery {
-        margin: 10px;
-    }
-
-        .gallery img {
-            margin-left: 16px;
-        }
-
-    .progress-bar {
-        width: 200px;
-        position: relative;
-        height: 8px;
-        margin-top: 4px;
-    }
-
-        .progress-bar .progress {
-            height: 8px;
-            background-color: #ff0000;
-            width: 0;
-        }
-</style>
-
 
 @{
     ViewData["Title"] = "Home Page";
@@ -44,7 +12,7 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <form method="post" asp-controller="Account" asp-action="LogOff">
+    <form method="post" asp-controller="Account" asp-action="LogOff" >
         @if (User.IsInRole("Admin"))
         {
             <div class="text-center">
@@ -67,10 +35,10 @@ else
     <h1 class="display-4 text-center">@Localizer["Welcome"]</h1>
 }
 <h2 class="text-left">Top-5 T-Shirts:</h2>
-<div class="row align-items-baseline container pb-3 pr-sm-4">
+<div class="row align-items-baseline container pb-3 pr-sm-4" style="margin: 0 auto">
     @foreach (var img in Model.shirtsRating)
     {
-        <div class="card shadow-lg" style="margin-left:10px; margin-top:10px; width: 12rem;" width="150">
+        <div class="card" style="margin-left:10px; margin-top:10px; width: 12rem;" width="150">
             <embed src="@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="200" />
             <div class="card-body">
                 <h5 class="card-text ellipsis">@img.name</h5>
@@ -84,61 +52,71 @@ else
     }
 </div>
 
-    <select class="form-control field-input mb-5 col-md-6">
-        <option value="All">All</option>
-        @foreach (var topic in Model.topic)
-        {
-            <option value="@topic.nameTopic">@topic.nameTopic</option>
-        }
+<div class="container" style="margin: 0 auto">
 
-    </select>
-    <form asp-controller="Home" asp-action="Index" id="sortForm">
-        <select class="form-control field-input mb-5 col-md-6" id="size" asp-for="sort" onChange="document.forms['sortForm'].submit();">
-            <option value="Name up">Name up</option>
-            <option value="Name down">Name down</option>
-            <option value="Data up">Data up</option>
-            <option value="Data down">Data down</option>
-        </select>
-    </form>
-<style>
-    .flex-container {
-        padding: 0;
-        margin: 0;
-        list-style: none;
-        display: -webkit-box;
-        display: -moz-box;
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        -webkit-flex-flow: row wrap;
-        justify-content: space-around;
-    }
-</style>
-<h3 class="text-left">Tags:</h3>
-<div style=" display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px; border: 1px solid black; border-radius: 10px;" class="styleTag">
-    @foreach (var tag in Model.tag)
-    {
-        <form asp-controller="Home" asp-action="Index" asp-route-tag="@tag.name" method="post">
-            <button type="submit" style="margin-left:5px; margin-bottom:3px;" class="btn btn-primary" asp-for="@tag.name">@tag.name</button>
-        </form>
-    }
-</div>
+    <div class="row">
+        <div class="col-sm">
+            <form asp-controller="Home" asp-action="Index" id="TopicForm">
+                <select asp-for="topics" class="form-control field-input mb-5 col-md-6" onChange="document.forms['TopicForm'].submit();">
+                    <option value="All">All</option>
+                    @foreach (var topic in Model.topic)
+                    {
+                        <option value="@topic.nameTopic">@topic.nameTopic</option>
+                    }
 
-<div class="row align-items-baseline container pb-3 pr-sm-4">
-    @foreach (var img in Model.shirt)
-    {
-        <div class="card shadow-lg" style="margin-left:10px; margin-top:10px; width: 16rem;" width="250">
-            <embed src="@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="250" />
-            <div class="card-body">
-                <h4 class="card-text ellipsis">@img.name</h4>
-                <p class="card-text ellipsis">@img.description</p>
-                <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
-                    <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
-                </form>
-            </div>
+                </select>
+            </form>
         </div>
-
-    }
+        <div class="col-sm">
+            <form asp-controller="Home" asp-action="Index" id="sortForm">
+                <select class="form-control field-input mb-5 col-md-6" id="size" asp-for="sort" onChange="document.forms['sortForm'].submit();">
+                    <option value="Name up">Name up</option>
+                    <option value="Name down">Name down</option>
+                    <option value="Data up">Data up</option>
+                    <option value="Data down">Data down</option>
+                </select>
+            </form>
+        </div>
+    </div>
+    <h3 class="text-left">Tags:</h3>
 </div>
+    <style>
+        .flex-container {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-flow: row wrap;
+            justify-content: space-around;
+        }
+    </style>
+    
+    <div style=" display: flex; flex-wrap: wrap; padding: 5px; padding-top: 10px; border: 1px solid black; border-radius: 10px;" class="row styleTag">
+        @foreach (var tag in Model.tag)
+        {
+            <form asp-controller="Home" asp-action="Index" asp-route-tag="@tag.name" method="post">
+                <button type="submit" style="margin-left:5px; margin-bottom:3px;" class="btn btn-primary" asp-for="@tag.name">@tag.name</button>
+            </form>
+        }
+    </div>
 
+    <div class="row align-items-baseline container pb-3 pr-sm-4 row">
+        @foreach (var img in Model.shirt)
+        {
+            <div class="card shadow-lg" style="margin-left:10px; margin-top:10px; width: 16rem;" width="250">
+                <embed src="@img.image.Replace(".svg",".png")" class="card-img-top" alt="..." height="250" />
+                <div class="card-body">
+                    <h4 class="card-text ellipsis">@img.name</h4>
+                    <p class="card-text ellipsis">@img.description</p>
+                    <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
+                        <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
+                    </form>
+                </div>
+            </div>
 
+        }
+    </div>

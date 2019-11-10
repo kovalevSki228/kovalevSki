@@ -20,6 +20,28 @@ namespace SaitCourses.Controllers
             _db = db;
             _userManager = userManager;
         }
+        private void AddDbImage(TShitsViewModel model)
+        {
+
+            _db.images.Add(new Image
+            {
+                image = model.image
+            });
+            _db.SaveChanges();
+
+        }
+        private string[] GetTegsConstructor(TShitsViewModel model)
+        {
+            string tag = model.Tag.Replace("  ", " ");
+            string[] tags = tag.Split(' ');
+            return tags;
+        }
+        private async Task<User> GetUser(string userId)
+        {
+            User user = await _userManager.FindByIdAsync(userId); ;
+            return user;
+        }
+
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> CreateShirt()
         {
@@ -29,15 +51,9 @@ namespace SaitCourses.Controllers
         }
         [TypeFilter(typeof(UserFilters))]
         [HttpPost]
-        public async Task<IActionResult> AddImage(TShitsViewModel model)
+        public IActionResult AddImage(TShitsViewModel model)
         {
-                _db.images.Add(new Image {
-               //     tShirt = shirt,
-                    image = model.image
-                });
-            //}
-            await _db.SaveChangesAsync();
-
+            AddDbImage(model);
             return RedirectToAction("Index", "Home");
         }
         [TypeFilter(typeof(UserFilters))]
@@ -47,7 +63,7 @@ namespace SaitCourses.Controllers
             User user = await _userManager.FindByIdAsync(userId);
             string tag = model.Tag.Replace("  ", " ");
             string[] tags = tag.Split(' ');
-          
+
             _db.tshirts.Add(new Shirt
             {
                 image = model.image,
@@ -57,7 +73,7 @@ namespace SaitCourses.Controllers
                 themeId = topics.id,
                 createDate = DateTime.Now.ToString("MM/dd/yyyy"),
                 Sex = model.sex
-            });; 
+            }); ;
             //}
             await _db.SaveChangesAsync();
             for (int i = 0; i < tags.Length; i++)

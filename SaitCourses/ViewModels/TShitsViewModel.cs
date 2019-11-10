@@ -51,5 +51,6 @@ namespace SaitCourses.ViewModels
         public string sort { get; set; }
         public string search { get; set; }
         public string tags { get; set; }
+        public string topics { get; set; }
     }
 }

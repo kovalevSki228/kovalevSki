@@ -24,33 +24,52 @@ namespace SaitCourses.Controllers
         public UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
         private readonly ApplicationContext _db;
-
         public HomeController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
         }
-
-        public IActionResult Index(HomeViewModel homeViewModel, string search, string tag , string sort)
-         {
-            Shirt[] allShirt = _db.tshirts.ToArray();
-            double[,] shirtTemp = new double[allShirt.Length, 2];
-            for (int j = 0; j < allShirt.Length; j++)
+        private List<Shirt> Sort(List<Shirt> shirts, string sort)
+        {
+            switch (sort)
             {
-                shirtTemp[j, 0] = allShirt[j].id;
-                int[] resaultRating = _db.ratings.Where(item => item.shirt.id == allShirt[j].id).Select(item => item.value).ToArray();
-                double marksRes = 0;
-                if (resaultRating.Length > 0)
-                {
-                    for (int k = 0; k < resaultRating.Length; k++)
-                    {
-                        marksRes += resaultRating[k] + 1;
-                    }
-                    marksRes /= resaultRating.Length;
-                }
-                shirtTemp[j, 1] = marksRes;
+                case "Name up":
+                    shirts = shirts.OrderBy(item => item.name).ToList();
+                    break;
+                case "Name down":
+                    shirts = shirts.OrderByDescending(item => item.name).ToList();
+                    break;
+                case "Data up":
+                    shirts = shirts.OrderBy(item => item.createDate).ToList();
+                    break;
+                case "Data down":
+                    shirts = shirts.OrderByDescending(item => item.createDate).ToList();
+                    break;
             }
+            return shirts;
+        }
+        private Shirt[] Sort(Shirt[] shirts, string sort)
+        {
+            switch (sort)
+            {
+                case "Name up":
+                    shirts = shirts.OrderBy(item => item.name).ToArray();
+                    break;
+                case "Name down":
+                    shirts = shirts.OrderByDescending(item => item.name).ToArray();
+                    break;
+                case "Data up":
+                    shirts = shirts.OrderBy(item => item.createDate).ToArray();
+                    break;
+                case "Data down":
+                    shirts = shirts.OrderByDescending(item => item.createDate).ToArray();
+                    break;
+            }
+            return shirts;
+        }
+        private double[,] SortRating(double[,] shirtTemp, Shirt[] allShirt)
+        {
             for (int j = 0; j < allShirt.Length; j++)
             {
                 for (int k = 0; k < allShirt.Length - 1; k++)
@@ -66,50 +85,89 @@ namespace SaitCourses.Controllers
                     }
                 }
             }
-            Shirt[] shirtsSortRating = new Shirt[5];
+            return shirtTemp;
+        }
+        private double[,] GetRating(double[,] shirtTemp, Shirt[] allShirt)
+        {
+            for (int j = 0; j < allShirt.Length; j++)
+            {
+                shirtTemp[j, 0] = allShirt[j].id;
+                int[] resaultRating = _db.ratings.Where(item => item.shirt.id == allShirt[j].id).Select(item => item.value).ToArray();
+                double marksRes = 0;
+                if (resaultRating.Length > 0)
+                {
+                    for (int k = 0; k < resaultRating.Length; k++)
+                    {
+                        marksRes += resaultRating[k] + 1;
+                    }
+                    marksRes /= resaultRating.Length;
+                }
+                shirtTemp[j, 1] = marksRes;
+            }
+            return shirtTemp;
+        }
+        private Shirt[] FiveTShirts(Shirt[] shirtsSortRating, Shirt[] allShirt, double[,] shirtTemp)
+        {
             for (int j = 0; j < allShirt.Length; j++)
             {
                 if (j == 5) break;
                 shirtsSortRating[j] = _db.tshirts.FirstOrDefault(item => item.id == shirtTemp[j, 0]);
             }
-            if (!String.IsNullOrEmpty(tag))
+            return shirtsSortRating;
+        }
+        private HomeViewModel SearchTopic(string topic, string sort, Shirt[] shirtsSortRating)
+        {
+            if (!String.IsNullOrEmpty(topic))
             {
-                var tags = _db.tags.FirstOrDefault(item => item.name == tag);
-
-                var shirtid = _db.tagInTShirts.Where(item => item.tagid == tags.id).ToList();
-
-                Shirt[] _shirt = new Shirt[shirtid.Count];
-                int i = 0;
-
-                foreach (var shId in shirtid)
+                Shirt[] _shirt;
+                if (topic != "All")
                 {
-                    _shirt[i] = _db.tshirts.FirstOrDefault(item => item.id == shId.shirtid);
-                    i++;
-                }
-                switch (homeViewModel.sort)
-                {
-                    case "Name up": _shirt = _shirt.OrderBy(item => item.name).ToArray();
-                        break;
-                    case "Name down": _shirt = _shirt.OrderByDescending(item => item.name).ToArray();
-                        break;
-                    case "Data up":
-                        _shirt = _shirt.OrderBy(item => item.createDate).ToArray();
-                        break;
-                    case "Data down":
-                        _shirt = _shirt.OrderByDescending(item => item.createDate).ToArray();
-                        break;
-                }
+                    var topics = _db.topics.FirstOrDefault(item => item.nameTopic == topic);
+                    var shirtid = _db.tshirts.Where(item => item.themeId == topics.id).ToList();
+                    
 
-                
-                return View(new HomeViewModel
+                    _shirt = new Shirt[shirtid.Count];
+                    _shirt = shirtid.ToArray();
+                }
+                else
+                    _shirt = _db.tshirts.Select(item => item).ToArray();
+                _shirt = Sort(_shirt, sort);
+                return new HomeViewModel
                 {
                     shirtsRating = shirtsSortRating.ToList(),
                     shirt = _shirt.ToList(),
                     tag = _db.tags.ToList(),
                     topic = _db.topics.ToList()
-                });
+                };
             }
-            var shirtSearch = _db.tshirts.Select(item => item).ToList();
+            return null;
+        }
+        private HomeViewModel SearchTag(string tag, string sort, Shirt[] shirtsSortRating)
+        {
+            if (!String.IsNullOrEmpty(tag))
+            {
+                var tags = _db.tags.FirstOrDefault(item => item.name == tag);
+                var shirtid = _db.tagInTShirts.Where(item => item.tagid == tags.id).ToList();
+                Shirt[] _shirt = new Shirt[shirtid.Count];
+                int i = 0;
+                foreach (var shId in shirtid)
+                {
+                    _shirt[i] = _db.tshirts.FirstOrDefault(item => item.id == shId.shirtid);
+                    i++;
+                }
+                _shirt = Sort(_shirt, sort);
+                return new HomeViewModel
+                {
+                    shirtsRating = shirtsSortRating.ToList(),
+                    shirt = _shirt.ToList(),
+                    tag = _db.tags.ToList(),
+                    topic = _db.topics.ToList()
+                };
+            }
+            return null;
+        }
+        private List<Shirt> Search(string search, List<Shirt> shirtSearch)
+        {
             if (!String.IsNullOrEmpty(search))
             {
                 //var commentSearch = _db.comments.Select(item => item);
@@ -131,40 +189,40 @@ namespace SaitCourses.Controllers
                 //}
 
             }
-            switch (sort)
-            {
-                case "Name up":
-                    shirtSearch = shirtSearch.OrderBy(item => item.name).ToList();
-                    break;
-                case "Name down":
-                    shirtSearch = shirtSearch.OrderByDescending(item => item.name).ToList();
-                    break;
-                case "Data up":
-                    shirtSearch = shirtSearch.OrderBy(item => item.createDate).ToList();
-                    break;
-                case "Data down":
-                    shirtSearch = shirtSearch.OrderByDescending(item => item.createDate).ToList();
-                    break;
-            }
-            return View(new HomeViewModel
+            return shirtSearch;
+        }
+        private HomeViewModel HomaPage(HomeViewModel homeViewModel, string search, string tag, string sort)
+        {
+            Shirt[] allShirt = _db.tshirts.ToArray();
+            double[,] shirtTemp = new double[allShirt.Length, 2];
+
+            shirtTemp = GetRating(shirtTemp, allShirt);
+            shirtTemp = SortRating(shirtTemp, allShirt);
+
+            Shirt[] shirtsSortRating = new Shirt[5];
+            shirtsSortRating = FiveTShirts(shirtsSortRating, allShirt, shirtTemp);
+
+            if (SearchTag(tag, sort, shirtsSortRating) != null)
+                return SearchTag(tag, sort, shirtsSortRating);
+            if (SearchTopic(homeViewModel.topics, sort, shirtsSortRating) != null)
+                return SearchTopic(homeViewModel.topics, sort, shirtsSortRating);
+            List<Shirt> shirtSearch = _db.tshirts.Select(item => item).ToList();
+            shirtSearch = Search(search, shirtSearch);
+            shirtSearch = Sort(shirtSearch, sort);
+
+            return new HomeViewModel
             {
                 shirtsRating = shirtsSortRating.ToList(),
                 shirt = shirtSearch.ToList(),
                 tag = _db.tags.ToList(),
                 topic = _db.topics.ToList()
-            });
+            };
         }
 
- 
-
-
-        public IActionResult Privacy()
-        {
-            
-            return View(_db.tshirts.ToList());
+        public IActionResult Index(HomeViewModel homeViewModel, string search, string tag , string sort)
+         {
+            return View(HomaPage(homeViewModel,search,tag,sort));
         }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -176,18 +234,6 @@ namespace SaitCourses.Controllers
         public IActionResult Upload()
         {
             var files = HttpContext.Request.Form.Files;
-            //var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-            //foreach (var file in files)
-            //{
-            //    if (file.Length > 0)
-            //    {
-            //        var fileName = ContentDispositionHeaderValue.Parse
-            //            (file.ContentDisposition).FileName.Trim('"');
-            //        System.Console.WriteLine(fileName);
-            //        file.SaveAs(Path.Combine(uploads, fileName));
-            //    }
-            //}
-
             return Ok();
         }
 
@@ -203,14 +249,5 @@ namespace SaitCourses.Controllers
 
             return LocalRedirect(returnUrl);
         }
-        //public string GetCulture(string code = "")
-        //{
-        //    if (!String.IsNullOrEmpty(code))
-        //    {
-        //        CultureInfo.CurrentCulture = new CultureInfo(code);
-        //        CultureInfo.CurrentUICulture = new CultureInfo(code);
-        //    }
-        //    return $"CurrentCulture:{CultureInfo.CurrentCulture.Name}, CurrentUICulture:{CultureInfo.CurrentUICulture.Name}";
-        //}
     }
 }
