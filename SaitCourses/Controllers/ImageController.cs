@@ -36,19 +36,69 @@ namespace SaitCourses.Controllers
             string[] tags = tag.Split(' ');
             return tags;
         }
-        private async Task<User> GetUser(string userId)
+        private Topic GetTopicConstructor(TShitsViewModel model)
         {
-            User user = await _userManager.FindByIdAsync(userId); ;
+            return _db.topics.FirstOrDefault(item => item.nameTopic == model.Topic);
+        }
+        private void AddTag(string[] tags, TShitsViewModel model)
+        {
+            for (int i = 0; i < tags.Length; i++)
+            {
+                if (_db.tags.FirstOrDefault(item => item.name == tags[i]) == null)
+                {
+                    _db.tags.Add(new Tag { name = tags[i] });
+                    _db.SaveChanges();
+                }
+                Shirt shirt = _db.tshirts.FirstOrDefault(item => item.name == model.TShirtName);
+                Tag tag1 = _db.tags.FirstOrDefault(item => item.name == tags[i]);
+                _db.tagInTShirts.Add(new TagInTShirt
+                {
+                    shirtid = shirt.id,
+                    tagid = tag1.id
+                });
+                _db.SaveChanges();
+            }
+        }
+        private string description(TShitsViewModel model)
+        {
+            if (model.description != "" && !String.IsNullOrEmpty(model.description))
+            { return model.description; }
+            else
+            { return "There should have been text"; }
+        }
+        private string name(TShitsViewModel model)
+        {
+            if (model.TShirtName != "" && !String.IsNullOrEmpty(model.TShirtName))
+            { return model.TShirtName; }
+            else
+            { return "There should have been text"; }
+        }
+        private void AddShirt(TShitsViewModel model, Topic topics, User user, string description, string name)
+        {
+            _db.tshirts.Add(new Shirt
+            {
+                image = model.image,
+                name = name,
+                description = description,
+                userId = user.Id,
+                themeId = topics.id,
+                createDate = DateTime.Now.ToString("MM/dd/yyyy"),
+                Sex = model.sex
+            }); ;
+            _db.SaveChanges();
+        }
+        private async Task<User> GetUser(string id)
+        {
+            User user = await _userManager.FindByIdAsync(id); ;
             return user;
         }
 
-        [TypeFilter(typeof(UserFilters))]
-        public async Task<IActionResult> CreateShirt()
-        {
-
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Index", "Users");
-        }
+        //[TypeFilter(typeof(UserFilters))]
+        //public async Task<IActionResult> CreateShirt()
+        //{
+        //    await _db.SaveChangesAsync();
+        //    return RedirectToAction("Index", "Users");
+        //}
         [TypeFilter(typeof(UserFilters))]
         [HttpPost]
         public IActionResult AddImage(TShitsViewModel model)
@@ -59,16 +109,14 @@ namespace SaitCourses.Controllers
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> Constructor(TShitsViewModel model, string userId, string returnUrl)
         {
-            var topics = _db.topics.FirstOrDefault(item => item.nameTopic == model.Topic);
-            User user = await _userManager.FindByIdAsync(userId);
-            string tag = model.Tag.Replace("  ", " ");
-            string[] tags = tag.Split(' ');
+            var topics = GetTopicConstructor(model);
+            User user = await _userManager.FindByIdAsync(userId);            
 
             _db.tshirts.Add(new Shirt
             {
                 image = model.image,
-                name = model.TShirtName,
-                description = model.description,
+                name = name(model),
+                description = description(model),
                 userId = user.Id,
                 themeId = topics.id,
                 createDate = DateTime.Now.ToString("MM/dd/yyyy"),
@@ -76,28 +124,14 @@ namespace SaitCourses.Controllers
             }); ;
             //}
             await _db.SaveChangesAsync();
-            for (int i = 0; i < tags.Length; i++)
-            {
-                if (_db.tags.FirstOrDefault(item => item.name == tags[i]) == null)
-                {
-                    _db.tags.Add(new Tag { name = tags[i] });
-                    await _db.SaveChangesAsync();
-                }
-                Shirt shirt = _db.tshirts.FirstOrDefault(item => item.name == model.TShirtName);
-                Tag tag1 = _db.tags.FirstOrDefault(item => item.name == tags[i]);
-                _db.tagInTShirts.Add(new TagInTShirt
-                {
-                    shirtid = shirt.id,
-                    tagid = tag1.id
-                });
-                await _db.SaveChangesAsync();
-            }
+            if(!String.IsNullOrEmpty(model.Tag))
+                AddTag(GetTegsConstructor(model), model);
             return Redirect(returnUrl);
         }
-        [TypeFilter(typeof(UserFilters))]
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //[TypeFilter(typeof(UserFilters))]
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
     }
 }

@@ -32,39 +32,33 @@
     </form>
     <div class="form-signin m-auto container body-content">
         <div class="row">
-            <div class="col">
+            <div class="col-sm-md">
                 <form class="form-signin col m-auto" method="post" asp-action="Setting" asp-controller="Users">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    @*<div class="form-group">
-                            <input type="hidden" asp-for="Id" class="form-control" />
-                        </div>*@
                     <div class="row">
                         <div>
 
                             <label asp-for="Email" class="control-label">@Localizer["Email"]</label>
-                            <input type="text" asp-for="Email" class="form-control" />
+                            <input type="text" asp-for="Email" readonly class="form-control" />
                         </div>
                         <div>
                             <label asp-for="Name" class="control-label">@Localizer["Name"]</label>
-                            <input type="text" asp-for="Name" class="form-control" />
+                            <input type="text" asp-for="Name" readonly class="form-control" />
                         </div>
                     </div>
                     <div class="row">
                         <div>
                             <label asp-for="FirstName" class="control-label">@Localizer["FirstName"]</label>
-                            <input type="text" asp-for="FirstName" class="form-control" />
+                            <input type="text" asp-for="FirstName" readonly class="form-control" />
                         </div>
                         <div>
                             <label asp-for="LastName" class="control-label">@Localizer["LastName"]</label>
-                            <input type="text" asp-for="LastName" class="form-control" />
+                            <input type="text" asp-for="LastName" readonly class="form-control" />
                         </div>
                     </div>
-                    <div class="row"><input type="submit" value="Add" class="btn btn-outline-primary" /></div>
-
-
                 </form>
             </div>
-            <div class="col m-auto">
+            <div class="col-sm">
 
                 <h3>
                     Comments: @Model.achievements.comments / @Model.achievements.numComments
@@ -110,44 +104,44 @@
                 </h3>
             </div>
         </div>
-
-        @*@Html.Partial("Edit")*@
     </div>
     
-    <div class="row align-items-baseline container pb-3 pr-sm-4 ">
-        <div class="card left shadow-lg" style="margin-left:10px; width: 10rem;" width="100 col-sm-3 pb-3 pr-sm-4">
-        <div class="card-body ellipsis">
-            <div class="row ">
-                <a class=" btn btn-block" style="margin-bottom:10px; margin-top:10px;" asp-controller="TShirt" asp-action="Constructor"
-                   asp-route-returnUrl="@Context.Request.Path" asp-route-userId="@Model.Id">
-                    @Localizer["Constructor"]
-                </a>
-            </div>
-        </div>
-    </div>
-        @foreach (var img in Model.shirts)
-        {
-            if (img.userId == Model.Id)
-            {
-                <div class="card left " style="margin-left:10px; width: 11rem;" width="100 col-sm-3 pb-3 pr-sm-4">
-                    <embed src="@img.image.Replace(".svg", ".png")" class="card-img-top" alt="..." height="150" />
-                    <div class="card-body ellipsis">
-                        <h6 class="card-text">@img.name</h6>
-                        <p class="card-text">@img.description</p>
-                        <div class="row ">
-                            <form asp-controller="TShirt" asp-action="Delete" asp-route-id="@img.id" method="post">
-                                <button type="submit" class="btn btn-sm btn-danger"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572397986/oqlhs3sjy8orthqrhtth.png"></button>
-                            </form>
-                            <form asp-controller="TShirt" asp-action="Constructor" asp-route-id="@img.id" asp-route-returnUrl="@Context.Request.Path">
-                                <button type="submit" class="btn btn-sm float-right btn-primary">Edit</button>
-                            </form>
-                            <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
-                                <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
-                            </form>
-
-                        </div>
+    <div class="align-items-baseline container-fluid pb-3 pr-sm-4">
+        <div class="row">
+            <div class="card left shadow-lg" style="margin-left:10px; width: 10rem;" width="100 col-sm-3 pb-3 pr-sm-4">
+                <div class="card-body ellipsis">
+                    <div class="row ">
+                        <a class=" btn btn-block" style="margin-bottom:10px; margin-top:10px;" asp-controller="TShirt" asp-action="Constructor"
+                           asp-route-returnUrl="@Context.Request.Path" asp-route-userId="@Model.Id">
+                            @Localizer["Constructor"]
+                        </a>
                     </div>
                 </div>
+            </div>
+            @foreach (var img in Model.shirts)
+            {
+                if (img.userId == Model.Id)
+                {
+                    <div class="card left shadow-lg" style="margin-left:10px; width: 10rem;" width="100 col-sm-3 pb-3 pr-sm-4 col">
+                        <embed src="@img.image.Replace(".svg", ".png")" class="card-img-top" alt="..." height="150" />
+                        <div class="card-body ellipsis">
+                            <h6 class="card-text ellipsis">@img.name</h6>
+                            <p class="card-text ellipsis">@img.description</p>
+                            <div class="row ">
+                                <form asp-controller="TShirt" asp-action="Delete" asp-route-id="@img.id" method="post" asp-route-returnUrl="@Context.Request.Path">
+                                    <button type="submit" class="btn btn-sm btn-danger"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572397986/oqlhs3sjy8orthqrhtth.png"></button>
+                                </form>
+                                <form asp-controller="TShirt" asp-action="Constructor" asp-route-id="@img.id" asp-route-returnUrl="@Context.Request.Path">
+                                    <button type="submit" class="btn btn-sm float-right btn-primary">Edit</button>
+                                </form>
+                                <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
+                                    <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                }
             }
-        }
+        </div>
     </div>

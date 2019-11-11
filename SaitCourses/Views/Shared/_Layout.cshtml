@@ -19,57 +19,41 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="~/js/theme.js"></script>
-    @*@{
-        if (User.IsInRole("Theme"))
-        {
-            
-            <link rel="stylesheet" href="~/css/dark.css" />
-            
-        }
-        else
-        {
-            <link rel="stylesheet" href="~/css/bright.css" />
-        }
-    }*@
-
 </head>
 <body class="dark_2 pb-5">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3 dark ">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3 dark " style="min-width:600px;">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["OdniMayki.ru"]</a>
+                <a class="navbar-brand" style="min-width: 200px;" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["OdniMayki.ru"]</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse ">
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse" style="margin: 0 auto">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            @Html.Partial("_LoginMeneger")
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" style="margin-left: 20wh" asp-controller="TShirt" asp-action="basket">Basket</a>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0" asp-controller="Home" asp-action="Index">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Search" name="search">
+                        <button class="btn btn-outline my-2 my-sm-0" type="submit">@Localizer["Search"]</button>
+                    </form>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" onclick="Theme()" @*asp-controller="Account" asp-action="SwitchColor"*@>@Localizer["SwitchColor"]</a>
+                            <a class="nav-link text-white" onclick="Theme()">@Localizer["SwitchColor"]</a>
                         </li>
                     </ul>
 
+
+
                 </div>
-                <div>
-                    <form class="form-inline my-2 my-lg-0"  asp-controller="Home" asp-action="Index">
-                               <input class="form-control mr-sm-2" type="text" placeholder="Search" name="search">
-                               <button class="btn btn-outline my-2 my-sm-0" type="submit">@Localizer["Search"]</button>                   
-                        </form>
-                </div>
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        @Html.Partial("_LoginMeneger")
-                    </li>
-                </ul>
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="TShirt" asp-action="basket">Basket
-                        <span class="badge badge-light">9</span><span class="sr-only">unread messages</span></a>
-                    </li>
-                </ul>
             </div>
             <div>
     
@@ -80,13 +64,6 @@
     <div class="container dark-2">
         @RenderBody()
     </div>
-    @*<div class="container">
-            <partial name="_CookieConsentPartial" />
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>*@
-
     <footer class="border-top footer text-muted position-fixed navbar">
         <div class="container">
             &copy; 2019 - OdniMayki.ru - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -104,6 +81,8 @@
                 crossorigin="anonymous"
                 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
         </script>
+        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"

@@ -19,7 +19,7 @@
                 <h1 class="display-4">@Localizer["WelcomeAdministrator"] @User.Identity.Name</h1>
             </div>
             <a class="btn btn-outline-primary" asp-controller="Users" asp-action="Index">@Localizer["Users"]</a>
-            <a class="btn btn-outline-primary" asp-controller="TShirt" asp-action="CreateTopic">Add role</a>
+            <a class="btn btn-outline-primary" asp-controller="TShirt" asp-action="CreateTopic">Add topic</a>
         }
         else if (User.IsInRole("User"))
         {
@@ -58,7 +58,6 @@ else
         <div class="col-sm">
             <form asp-controller="Home" asp-action="Index" id="TopicForm">
                 <select asp-for="topics" class="form-control field-input mb-5 col-md-6" onChange="document.forms['TopicForm'].submit();">
-                    <option value="All">All</option>
                     @foreach (var topic in Model.topic)
                     {
                         <option value="@topic.nameTopic">@topic.nameTopic</option>

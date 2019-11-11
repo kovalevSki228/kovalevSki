@@ -9,12 +9,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using SaitCourses.Filters;
+using Microsoft.AspNetCore.Identity;
 
 namespace SaitCourses.Controllers
 {
     public class UsersController : Controller
     {
-        
+
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ApplicationContext _db;
@@ -34,7 +35,7 @@ namespace SaitCourses.Controllers
             User user = await _userManager.FindByIdAsync(id);
             return user;
         }
-        private Comment[] GetComment (User user)
+        private Comment[] GetComment(User user)
         {
             return _db.comments.Where(item => item.userId == user.Id).ToArray();
         }
@@ -46,7 +47,7 @@ namespace SaitCourses.Controllers
         {
             return _db.tshirts.Where(item => item.userId == user.Id).ToArray();
         }
-        private Achievements Achievemen(Comment[] comment, Like[] getLike,  Shirt[] shirt)
+        private Achievements Achievemen(Comment[] comment, Like[] getLike, Shirt[] shirt)
         {
             return new Achievements
             {
@@ -60,7 +61,28 @@ namespace SaitCourses.Controllers
                 numShirt = shirt.Length / 5 * 5 + 5,
             };
         }
-
+        private EditUserViewModel SettingUser(User user)
+        {
+            return new EditUserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                shirts = _db.tshirts.ToArray(),
+                achievements = Achievemen(GetComment(user), GetLike(user), GetShirt(user))
+            };
+        }
+        private async Task<User> SaveSetting(User user, EditUserViewModel model)
+        {
+            user.Email = model.Email;
+            user.UserName = model.Name;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            await _userManager.UpdateAsync(user);
+            return null;
+        }
         [Authorize(Roles = "Admin")]
         public IActionResult Index() => View(_userManager.Users.ToList());
 
@@ -70,52 +92,20 @@ namespace SaitCourses.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SettingAdmin(string id)
         {
-            User user = await _userManager.FindByIdAsync(id);
-            //User userr = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(new EditUserViewModel {
-                Id = user.Id, 
-                Email = user.Email,
-                Name = user.UserName,
-                FirstName = user.FirstName,
-                LastName = user.LastName, 
-                shirts = _db.tshirts.ToArray(),
-                achievements = Achievemen(GetComment(await GetUser(id)), GetLike(await GetUser(id)), GetShirt(await GetUser(id)))
-                
-            });
+            return View(SettingUser(await GetUser(id)));
         }
         [TypeFilter(typeof(UserFilters))]
-        public async Task<IActionResult> Setting(string id)
+        public async Task<IActionResult> Setting(string id, string returnUrl)
         {
-            
-            User user = await _userManager.GetUserAsync(User);
-            //User userr = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            
-            return View(new EditUserViewModel
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Name = user.UserName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                shirts = _db.tshirts.ToArray(),
-                achievements = Achievemen(GetComment(await GetUser()), GetLike(await GetUser()), GetShirt(await GetUser()))
 
-            });
+            return View(SettingUser(await GetUser()));
         }
         [TypeFilter(typeof(UserFilters))]
         public IActionResult Constructor()
         {
             string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
 
-            return View(new TShitsViewModel { 
+            return View(new TShitsViewModel {
                 Topics = topics,
                 Tegs = _db.tags.Select(item => item.name).ToArray(),
                 tag = _db.tags.ToArray()
@@ -142,7 +132,7 @@ namespace SaitCourses.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 mark = _db.ratings.FirstOrDefault(item => item.shirt.id == id && item.user == user);
-                
+
                 if (mark != null)
                 {
                     for (int i = 0; i < 5; i++)
@@ -169,20 +159,20 @@ namespace SaitCourses.Controllers
                 {
                     like = comments[i].like,
                     Text = comments[i].text,
-                    userName = _db.Users.FirstOrDefault(item => 
+                    userName = _db.Users.FirstOrDefault(item =>
                         item.Id == comments[i].userId).UserName,
                     commentId = comments[i].id
                 };
             }
-            return View(new TShitsViewModel { 
+            return View(new TShitsViewModel {
                 id = result.id,
                 description = result.description,
-                TShirtName = result.name, 
+                TShirtName = result.name,
                 image = result.image,
-                rating = marksRes, 
-                ratings = marks, 
+                rating = marksRes,
+                ratings = marks,
                 data = result.createDate,
-                comments = commentsView 
+                comments = commentsView
             });
         }
         [HttpPost]
@@ -193,7 +183,7 @@ namespace SaitCourses.Controllers
             if (user != null)
             {
                 await _userManager.SetLockoutEnabledAsync(user, true);
-            }                    
+            }
             return RedirectToAction("Index");
         }
         [HttpPost]
@@ -203,7 +193,7 @@ namespace SaitCourses.Controllers
             User user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
-                
+
                 await _userManager.SetLockoutEnabledAsync(user, false);
             }
             return RedirectToAction("Index");
@@ -247,28 +237,15 @@ namespace SaitCourses.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userManager.GetUserAsync(User);
-                //User userr = await _userManager.FindByIdAsync(model.Id);
-                if (user != null)
+                User user = await GetUser();
+                if (await GetUser() != null)
                 {
                     user.Email = model.Email;
                     user.UserName = model.Name;
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
-
-
-                    var result = await _userManager.UpdateAsync(user);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                    }
+                    await _userManager.UpdateAsync(user);
+                    return RedirectToAction("Setting");
                 }
             }
             return View();
@@ -278,11 +255,11 @@ namespace SaitCourses.Controllers
         {
             User user = await _userManager.GetUserAsync(User);
             //User userr = await _userManager.FindByIdAsync(id);
-            if (user==null)
+            if (user == null)
             {
                 return NotFound();
             }
-            EditUserViewModel model = new EditUserViewModel {Id = user.Id, Email = user.Email, Name = user.UserName, FirstName = user.FirstName, LastName = user.LastName };
+            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email, Name = user.UserName, FirstName = user.FirstName, LastName = user.LastName };
             return View(model);
         }
         [HttpPost]
@@ -293,7 +270,7 @@ namespace SaitCourses.Controllers
             {
                 User user = await _userManager.GetUserAsync(User);
                 //User userr = await _userManager.FindByIdAsync(model.Id);
-                if(user!=null)
+                if (user != null)
                 {
                     user.Email = model.Email;
                     user.UserName = model.Name;
@@ -343,9 +320,30 @@ namespace SaitCourses.Controllers
         public async Task<ActionResult> Delete(string id)
         {
             User user = await _userManager.FindByIdAsync(id);
-            if(user!=null)
+            if (user != null)
             {
-                IdentityResult result = await _userManager.DeleteAsync(user);
+               var tempC = _db.comments.Where(item => item.user == user).ToArray();
+                for (int i = 0; i < tempC.Length; i++)
+                {
+                    var res = _db.comments.FirstOrDefault(item => item.user == user);
+                    if (res != null)
+                        _db.comments.Remove(res);
+                }
+                var tempR = _db.ratings.Where(item => item.user == user).ToArray();
+                for (int i = 0; i < tempR.Length; i++)
+                {
+                    var res2 = _db.ratings.FirstOrDefault(item => item.user == user);
+                    if (res2 != null)
+                        _db.ratings.Remove(res2);
+                }
+                var tempT = _db.tshirts.Where(item => item.users == user).ToArray();
+                for (int i = 0; i < tempT.Length; i++)
+                {
+                    var res3 = _db.tshirts.FirstOrDefault(item => item.users == user);
+                    if (res3 != null)
+                        _db.tshirts.Remove(res3);
+                }
+        IdentityResult result = await _userManager.DeleteAsync(user);
             }
             return RedirectToAction("Index");
         }
@@ -353,7 +351,7 @@ namespace SaitCourses.Controllers
         public async Task<IActionResult> ChangePassword(string id)
         {
             User user = await _userManager.FindByIdAsync(id);
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -364,10 +362,10 @@ namespace SaitCourses.Controllers
         [TypeFilter(typeof(UserFilters))]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 User user = await _userManager.FindByIdAsync(model.Id);
-                if(user!=null)
+                if (user != null)
                 {
                     var _passwordValidator =
                         HttpContext.RequestServices.GetService(typeof(IPasswordValidator<User>)) as IPasswordValidator<User>;
@@ -376,7 +374,7 @@ namespace SaitCourses.Controllers
 
                     IdentityResult result =
                         await _passwordValidator.ValidateAsync(_userManager, user, model.NewPassword);
-                    if(result.Succeeded)
+                    if (result.Succeeded)
                     {
                         user.PasswordHash = _passwordHasher.HashPassword(user, model.NewPassword);
                         await _userManager.UpdateAsync(user);
@@ -384,15 +382,26 @@ namespace SaitCourses.Controllers
                     }
                     else
                     {
-                        foreach(var error in result.Errors)
+                        foreach (var error in result.Errors)
                         {
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
                     }
                 }
-                
+
             }
             return View(model);
+        }
+        public async  Task<IActionResult> SetAdmin(string id)
+        {
+            await _userManager.AddToRoleAsync(await GetUser(id), "Admin");
+            return View("Index");
+        }
+        public async Task<IActionResult> RemAdmin(string id)
+        {
+            User user = await _userManager.FindByIdAsync(id);
+            await _userManager.AddToRoleAsync(user, "Admin");
+            return View("Index");
         }
     }
 }

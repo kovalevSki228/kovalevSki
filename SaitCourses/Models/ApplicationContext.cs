@@ -26,13 +26,9 @@ namespace SaitCourses.Models
         public DbSet<Comment> comments { get; set; }
         public DbSet<Like> likes { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
-            :base(options)
+            : base(options)
         {
             Database.EnsureCreated();
-            topics.Add(new Topic
-            {
-                nameTopic = "ALL"
-            });
         }
     }
 }

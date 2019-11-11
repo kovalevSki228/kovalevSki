@@ -46,12 +46,7 @@ else
         <div class="form-group">
             <label asp-for="Email"></label><br />
             <input class="form-control" asp-for="Email" />
-            <span asp-validation-for="Email"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Name"></label><br />
-            <input class="form-control" asp-for="Name" />
-            <span asp-validation-for="Name"></span>
+            @*<span asp-validation-for="Email"/>*@
         </div>
         <input id="messadeBasked" asp-for="noAutorize" hidden/>
         <button type="submit" class="btn">Bay</button>

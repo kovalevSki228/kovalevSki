@@ -51,6 +51,14 @@ namespace SaitCourses.Controllers
                 _db.SaveChanges();
             }
         }
+        private string GetTagsEditConstructor(int id)
+        {
+            var TagInShirtId = _db.tagInTShirts.Where(item => item.shirtid == id).ToArray();
+            string tags = "";
+            for (int i = 0; i < TagInShirtId.Length; i++)
+                tags += " "+ _db.tags.FirstOrDefault(item => item.id == TagInShirtId[i].tagid).name.ToString();
+            return tags;
+        }
         private TShitsViewModel ShowConstructor(int id, string returnUrl, string userId)
         {
             string[] topics = _db.topics.Select(item => item.nameTopic).ToArray();
@@ -78,7 +86,7 @@ namespace SaitCourses.Controllers
                     TShirtName = shirt.name,
                     description = shirt.description,
                     Topics = topics,
-                    Tegs = _db.tags.Select(item => item.name).ToArray()
+                    Tag = GetTagsEditConstructor(id),
                 };
             }
         }
@@ -86,15 +94,13 @@ namespace SaitCourses.Controllers
         {
             var result = _db.tshirts.FirstOrDefault(item => item.id == model.id);
             var topics = _db.topics.FirstOrDefault(item => item.nameTopic == model.Topic);
-            result.image = _db.tshirts.FirstOrDefault(item => item.id == model.id).image;
             result.name = model.TShirtName;
             result.description = model.description;
-            result.userId = user.Id;
             result.themeId = topics.id;
             result.createDate = DateTime.Now.ToString("MM/dd/yyyy");
             result.Sex = model.sex;
             _db.tshirts.Update(result);
-            _db.SaveChangesAsync();
+            _db.SaveChanges();
         }
         private string[] GetTegsEdit(TShitsViewModel model)
         {
@@ -196,10 +202,10 @@ namespace SaitCourses.Controllers
         }
 
         [TypeFilter(typeof(UserFilters))]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int id, string returnUrl)
         {
             deleteShirt(id);
-            return RedirectToAction("Setting", "Users");
+            return Redirect(returnUrl);
         }
 
         public IActionResult CreateTopic() => View();
@@ -224,7 +230,8 @@ namespace SaitCourses.Controllers
         public async Task<IActionResult> Edit(TShitsViewModel model, string returnUrl)
         {      
             ChangingParametersShirt(model, await GetUser());
-            AddTagsEdit(model);
+            if(!String.IsNullOrEmpty(model.Tag))
+               AddTagsEdit(model);
             return Redirect(returnUrl);
         }
 

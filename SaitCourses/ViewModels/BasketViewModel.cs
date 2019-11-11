@@ -23,12 +23,9 @@ namespace SaitCourses.ViewModels
         public string returnUrl { get; set; }
 
         [Required]
+        [EmailAddress(ErrorMessage = "Некорректный адрес")]
         [Display(Name = "Email")]
         public string Email { get; set; }
-
-        [Required]
-        [Display(Name = "Name")]
-        public string Name { get; set; }
 
         public string noAutorize { get; set; }
     }

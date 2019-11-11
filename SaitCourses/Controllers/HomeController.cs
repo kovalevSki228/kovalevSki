@@ -30,6 +30,14 @@ namespace SaitCourses.Controllers
             _signInManager = signInManager;
             _db = db;
         }
+        private void Language(string culture)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+        }
         private List<Shirt> Sort(List<Shirt> shirts, string sort)
         {
             switch (sort)
@@ -193,6 +201,12 @@ namespace SaitCourses.Controllers
         }
         private HomeViewModel HomaPage(HomeViewModel homeViewModel, string search, string tag, string sort)
         {
+            if (_db.topics.FirstOrDefault(item => item.nameTopic == "All") == null)
+                _db.topics.Add(new Topic
+                {
+                    nameTopic = "All"
+                });
+            _db.SaveChanges();
             Shirt[] allShirt = _db.tshirts.ToArray();
             double[,] shirtTemp = new double[allShirt.Length, 2];
 
@@ -240,13 +254,7 @@ namespace SaitCourses.Controllers
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
-
-            Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-            );
-
+            Language(culture);
             return LocalRedirect(returnUrl);
         }
     }

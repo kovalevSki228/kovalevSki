@@ -38,10 +38,7 @@
 
             <div class="col-sm-md ">
                 <form class="form-signin col m-auto" method="post" asp-action="Setting" asp-controller="Users">
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    @*<div class="form-group">
-                <input type="hidden" asp-for="Id" class="form-control" />
-            </div>*@
+                    <div asp-validation-summary="All" asp-route-returnUrl="@Context.Request.Path" class="text-danger"></div>
                     <div class="row">
                         <div>
 
@@ -90,7 +87,7 @@
                         </label>
                     }
                 </h3>
-                <h3>
+                @*<h3>
                     Set Like: @Model.achievements.setLike / @Model.achievements.numSetLike
                     @for (int i = 0; i < @Model.achievements.setLike / 5; i++)
                     {
@@ -99,7 +96,7 @@
                                  src="https://res.cloudinary.com/del5wrr12/image/upload/v1573274297/pme8tkxiucfwlladmnfd.png" />
                         </label>
                     }
-                </h3>
+                </h3>*@
                 </h3>
                 <h3>
                     Shirt: @Model.achievements.shirt / @Model.achievements.numShirt
@@ -114,8 +111,6 @@
                 </h3>
             </div>
         </div>
-
-        @*@Html.Partial("Edit")*@
     </div>
     
     <div class="align-items-baseline container-fluid pb-3 pr-sm-4 ">
@@ -140,13 +135,13 @@
                             <h6 class="card-text ellipsis">@img.name</h6>
                             <p class="card-text ellipsis">@img.description</p>
                             <div class="row ">
-                                <form asp-controller="TShirt" asp-action="Delete" asp-route-id="@img.id" method="post">
+                                <form asp-controller="TShirt" asp-action="Delete" asp-route-id="@img.id" method="post" asp-route-returnUrl="@Context.Request.Path">
                                     <button type="submit" class="btn btn-sm btn-danger"><img src="https://res.cloudinary.com/del5wrr12/image/upload/v1572397986/oqlhs3sjy8orthqrhtth.png"></button>
                                 </form>
                                 <form asp-controller="TShirt" asp-action="Constructor" asp-route-id="@img.id" asp-route-returnUrl="@Context.Request.Path">
                                     <button type="submit" class="btn btn-sm float-right btn-primary">Edit</button>
                                 </form>
-                                <form asp-controller="Users" asp-action="More" asp-route-id="@img.id">
+                                <form asp-controller="Users" asp-action="More" asp-route-id="@img.id" >
                                     <button type="submit" class="btn btn-sm float-right btn-primary">More</button>
                                 </form>
 
